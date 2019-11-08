@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import "../data/restActions.dart";
-import "../widgets/CustomWidgets.dart";
+import "../widgets/AppWidgets.dart";
 
 class CreateCategoryWidget extends MaterialPageRoute {
   CreateCategoryWidget()
@@ -27,6 +27,7 @@ class _NewProductState extends State<NewCategory> {
   String _id;
   bool _isNew;
   bool generic;
+  bool sendingRequest = false;
 
   void _save() async {
     CategoryActions categoryActions = new CategoryActions();

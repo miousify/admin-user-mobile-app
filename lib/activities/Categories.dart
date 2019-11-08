@@ -43,13 +43,13 @@ class _CategoryStateView extends State<CategoryStateful> {
           margin: EdgeInsets.only(top: 16, left: 12, right: 12),
           child: Card(
               child: Container(
-            height: 100,
             child: ListTile(
-              title: Text("Category name"),
+              title: Text("Category name",
+                  style: Theme.of(context).textTheme.subhead),
               subtitle: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[],
+                children: <Widget>[Text("Category description")],
               ),
               leading: Icon(Icons.threesixty),
             ),
@@ -68,14 +68,20 @@ class _CategoryStateView extends State<CategoryStateful> {
     Widget loadedView() {
       return Scaffold(
         appBar: AppBar(
+          elevation: 0,
           title: Text("Categories"),
           actions: <Widget>[
-            Icon(Icons.add),
+            RawMaterialButton(
+              onPressed: () {
+                Navigator.pushNamed(context, "/create-category");
+              },
+              child: Icon(Icons.add),
+            ),
             SizedBox(
               width: 16,
             )
           ],
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.blue,
         ),
         body: ListView(
           children: <Widget>[

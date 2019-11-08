@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import "../data/restActions.dart";
-import "../widgets/CustomWidgets.dart";
+import "../widgets/AppWidgets.dart";
 
 class CreateProductWidget extends MaterialPageRoute {
   bool isNew;
@@ -22,12 +22,19 @@ class NewProduct extends StatefulWidget {
 
 class _NewProductState extends State<NewProduct> {
   String _productTitle;
+  String title;
+  String description;
+  String image;
+  String category;
+  String caption;
   String _productDescrption;
   int _currentPage = 0;
   bool _saveingProduct = false;
   bool _savedProduct = false;
   bool _isNew = true;
   String _productId = "";
+
+  bool sendingRequest = false;
 
   _NewProductState() {}
 
@@ -40,9 +47,13 @@ class _NewProductState extends State<NewProduct> {
     _productDescrption = "Product description goes here";
   }
 
+  void _update() async {
+    // updates a product
+  }
   void _save() async {
-    ProductActions productActions = new ProductActions();
+    print("sent request");
 
+    ProductActions productActions = new ProductActions();
     Map map = {
       "title": "title",
       "caption": "caption",
@@ -51,10 +62,12 @@ class _NewProductState extends State<NewProduct> {
       "category": "category"
     };
 
-    if (this._isNew) {
+    if (false == true) {
       dynamic response = await productActions.putInBucket(this._productId, map);
     } else {
       dynamic response = await productActions.postToBucket(map);
+      print("successfully posted");
+      print(response);
       // on added. load products page
     }
   }
@@ -65,6 +78,8 @@ class _NewProductState extends State<NewProduct> {
       child: ListView(
         children: <Widget>[
           Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Container(
               padding: EdgeInsets.all(16),
               child: Column(
@@ -101,8 +116,10 @@ class _NewProductState extends State<NewProduct> {
             height: 12,
           ),
           Card(
+            borderOnForeground: true,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Container(
-              color: Colors.white,
               padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,12 +283,24 @@ class _NewProductState extends State<NewProduct> {
                   icon: Icon(Icons.settings), title: Text("Settings"))
             ]),
         appBar: AppBar(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           iconTheme: Theme.of(context).iconTheme,
-          backgroundColor: Colors.white,
-          actions: <Widget>[AppIconButton(icon: Icons.save, onPressed: () {})],
+          backgroundColor: Color.fromRGBO(0, 90, 0, .9),
+          actions: <Widget>[
+            RawMaterialButton(
+              onPressed: () {
+                _save();
+              },
+              child: Icon(
+                Icons.save,
+                color: Colors.white,
+              ),
+            )
+          ],
           title: Text(
             _productTitle,
-            style: Theme.of(context).textTheme.title,
+            style: Theme.of(context).textTheme.title.apply(color: Colors.white),
           ),
         ),
         bottomSheet: BottomSheet(

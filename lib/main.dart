@@ -5,22 +5,39 @@ import "./activities/Categories.dart";
 import "./activities/CreateCategory.dart";
 import "./activities/CreateProduct.dart";
 import "./activities/Customers.dart";
+import "./activities/Login.dart";
 import "./activities/Products.dart";
 import "./activities/Settings.dart";
 import "./activities/Transactions.dart";
 import "./activities/ViewCategory.dart";
 import "./activities/ViewProduct.dart";
-import "./data/restActions.dart";
-
+import "./data/AppStorage.dart";
+import "./widgets/AppWidgets.dart";
 //5d64ffd3081cf32c7db898b9
-void main() {
-  ProductActions();
 
+void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return MainAppState();
+  }
+}
+
+class MainAppState extends State<MyApp> {
   // This widget is the root of your application.
+  bool isLoggedIN = true;
+
+  onLoggedIn() {
+    setState(() {
+      isLoggedIN = true;
+    });
+    print("finnaly logged in");
+  }
+
   @override
   Widget build(BuildContext context) {
     Map<String, WidgetBuilder> routes = {
@@ -61,15 +78,47 @@ class MyApp extends StatelessWidget {
         return TransactionsViewRoute().builder(context);
       },
     };
+    /*
+        await AppStorage().getStoreAuth();
+    */
+    Future<dynamic> checkAuth() async {
+      dynamic auth = await AppStorage().getStoreAuth();
+      return auth;
+    }
+
+    Widget MainStartingPoint = FutureBuilder(
+      future: checkAuth(),
+      builder: (BuildContext buildContext, AsyncSnapshot snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.active:
+            return GenericLoadingWidget();
+            break;
+          case ConnectionState.waiting:
+            return GenericLoadingWidget();
+            break;
+          case ConnectionState.done:
+            return snapshot.data != null
+                ? IndexPage()
+                : LoginWidget(
+                    onLoggedin: this.onLoggedIn,
+                  );
+            break;
+          case ConnectionState.none:
+            return GenericLoadingWidget();
+            break;
+        }
+
+        return null;
+      },
+    );
 
     return MaterialApp(
         title: 'Flutter Demo',
         routes: routes,
         initialRoute: "",
         theme: ThemeData(
-            iconTheme: IconThemeData(color: Colors.blue),
+            iconTheme: IconThemeData(color: Colors.white),
             // This is the theme of your application.
-            //
             // Try running your application with "flutter run". You'll see the
             // application has a blue toolbar. Then, without quitting the app, try
             // changing the primarySwatch below to Colors.green a/**/nd then invoke
@@ -78,6 +127,6 @@ class MyApp extends StatelessWidget {
             // Notice that the counter didn't reset back to zero; the application
             // is not restarted.
             buttonTheme: ButtonThemeData(buttonColor: Colors.black)),
-        home: IndexPage(context));
+        home: MainStartingPoint);
   }
 }

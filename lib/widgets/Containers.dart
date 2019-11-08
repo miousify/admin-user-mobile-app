@@ -87,3 +87,40 @@ class BeatifulHomeActionButton extends StatelessWidget {
         padding: EdgeInsets.all(0));
   }
 }
+
+class BeatifulContentPanel extends StatelessWidget {
+  final int height;
+  final Widget child;
+  final EdgeInsets paddin;
+  final EdgeInsets margin;
+  final String imageAsset;
+
+  final bool userBackgroundImage;
+  BeatifulContentPanel(
+      {this.height,
+      this.child,
+      this.paddin,
+      this.margin,
+      this.imageAsset = null,
+      this.userBackgroundImage});
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
+      child: this.child,
+      padding: this.margin,
+      margin: this.margin,
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage(this.userBackgroundImage == true
+                  ? "images/product_add.jpg"
+                  : ""),
+              fit: BoxFit.contain),
+          color: Colors.black87,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(14)),
+    );
+  }
+}
+
+//
