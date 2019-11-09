@@ -78,9 +78,11 @@ class MainAppState extends State<MyApp> {
         return TransactionsViewRoute().builder(context);
       },
     };
+
     /*
         await AppStorage().getStoreAuth();
     */
+
     Future<dynamic> checkAuth() async {
       dynamic auth = await AppStorage().getStoreAuth();
       return auth;
@@ -108,7 +110,7 @@ class MainAppState extends State<MyApp> {
             break;
         }
 
-        return null;
+        return new Container();
       },
     );
 

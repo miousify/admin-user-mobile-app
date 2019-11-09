@@ -201,20 +201,3 @@ Widget AppFlatActionCard(Widget child,
     ),
   );
 }
-
-Widget AppFlatInput(
-    {Color color, IconData icon, String hint, Function onChange}) {
-  return TextField(
-    onChanged: onChange,
-    onSubmitted: (String string) {},
-    onEditingComplete: () {},
-    decoration: InputDecoration(
-        prefixIcon: Icon(
-          icon == null ? Icons.input : icon,
-          color: color == null ? Colors.blue : color,
-        ),
-        helperText: "Category name",
-        border: null,
-        hintText: hint == null ? "Category label" : hint),
-  );
-}

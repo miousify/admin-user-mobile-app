@@ -25,7 +25,6 @@ class BeatifulHomeActionButton extends StatelessWidget {
   final String caption;
   final String routePath;
   final bool isIconLeft;
-
   BeatifulHomeActionButton(
       {this.onTap,
       this.title,

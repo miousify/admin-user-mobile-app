@@ -1,42 +1,48 @@
+import "dart:convert";
+
 import "package:flutter/material.dart";
 
-class View extends StatelessWidget {
+import "../data/restActions.dart";
+import "../widgets/AppWidgets.dart";
+
+abstract class GenericList extends StatelessWidget {
+  final RESTActions action;
+  final String filter;
+
+  Widget bucketItemsBuilder(List<dynamic> items);
+
+  GenericList({this.action, this.filter});
+
+  Future<List<dynamic>> dataLoadeer() async {
+    String rawBucketResponse = await action.getBucketItems();
+    List<dynamic> convertedRawToList = json.decode(rawBucketResponse);
+    return convertedRawToList;
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget customerItem() {
-      return Container(
-        margin: EdgeInsets.only(top: 12, left: 12, right: 12),
-        child: Card(
-            elevation: 2,
-            child: Container(
-              padding: EdgeInsets.all(8),
-              child: ListTile(
-                  title: Text("Customer Name"),
-                  subtitle: Row(
-                    children: <Widget>[
-                      Text("successful orders: "),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text("pending order")
-                    ],
-                  ),
-                  leading: CircleAvatar()),
-            )),
-      );
-    }
-
     // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(title: Text("Customers")),
-      body: ListView(
-        children: <Widget>[
-          customerItem(),
-          customerItem(),
-          customerItem(),
-          customerItem()
-        ],
-      ),
-    );
+    return FutureBuilder(
+        future: dataLoadeer(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return GenericLoadingWidgetContainer();
+              break;
+            case ConnectionState.waiting:
+              return GenericLoadingWidgetContainer();
+              break;
+            case ConnectionState.active:
+              return GenericLoadingWidgetContainer();
+              break;
+            case ConnectionState.done:
+              return Container(
+                color: Colors.blueGrey,
+                child: bucketItemsBuilder(snapshot.data),
+              );
+              break;
+          }
+          return null;
+        });
   }
 }

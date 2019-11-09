@@ -99,26 +99,13 @@ class RESTActions extends AppHTTPFactory {
 
 class ProductActions extends RESTActions {
   ProductActions() : super("product");
-//  @override
-//  Future<String> getBucketItems({Map<String, dynamic> filter}) async {
-//    // TODO: implement getBucketItems
-//    var rawString = await super.getBucketItems(filter: filter);
-//
-//    List<dynamic> decodedList = json.decode(rawString);
-//
-//    ProductListModel d = ProductListModel(decodedList);
-//
-//    return rawString;
-//  }
 }
 
 class StoreRestAction extends AppHTTPFactory {
   getStore() {}
-
   Future<Map<String, dynamic>> loginStore(Map data) async {
     http.Response response = await http
         .post("http://api-dot-lubi-ep.appspot.com/api/store/login", body: data);
-    print('received response login store response');
 
     switch (response.statusCode) {
       // change 400 to 200 when it is changed on the server
@@ -128,7 +115,6 @@ class StoreRestAction extends AppHTTPFactory {
         return convertedRes;
         break;
       case 500:
-        print("Server Error during login");
         print("failed login");
         return {"token": false};
       default:

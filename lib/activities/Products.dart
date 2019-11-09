@@ -17,11 +17,11 @@ class ProductStateful extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return _ProductStateView();
+    return _ProductState();
   }
 }
 
-class _ProductStateView extends State<ProductStateful> {
+class _ProductState extends State<ProductStateful> {
   List<ProductModel> _items = new List<ProductModel>();
   bool isLoaded = false;
   List<Map<String, String>> filter;

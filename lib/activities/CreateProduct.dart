@@ -95,15 +95,15 @@ class _NewProductState extends State<NewProduct> {
                   SizedBox(
                     height: 12,
                   ),
-                  AppFlatInput(hint: "Product name"),
+                  AppPlainInputWidget(hint: "Product name"),
                   SizedBox(
                     height: 12,
                   ),
-                  AppFlatInput(hint: "Caption"),
+                  AppPlainInputWidget(hint: "Caption"),
                   SizedBox(
                     height: 12,
                   ),
-                  AppFlatInput(hint: "Description")
+                  AppPlainInputWidget(hint: "Description")
                 ],
               ),
             ),

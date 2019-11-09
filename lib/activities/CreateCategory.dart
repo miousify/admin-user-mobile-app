@@ -86,17 +86,17 @@ class _NewProductState extends State<NewCategory> {
                         SizedBox(
                           height: 12,
                         ),
-                        AppFlatInput(
+                        AppPlainInputWidget(
                           hint: "Label",
                         ),
                         SizedBox(
                           height: 12,
                         ),
-                        AppFlatInput(hint: "Caption"),
+                        AppPlainInputWidget(hint: "Caption"),
                         SizedBox(
                           height: 12,
                         ),
-                        AppFlatInput(
+                        AppPlainInputWidget(
                           hint: "Description",
                         ),
                       ],

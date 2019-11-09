@@ -11,3 +11,20 @@ class GenericLoadingWidget extends StatelessWidget {
     );
   }
 }
+
+class GenericLoadingWidgetContainer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Center(
+          child: CircularProgressIndicator(),
+        )
+      ],
+    );
+  }
+}
