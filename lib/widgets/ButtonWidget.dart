@@ -1,4 +1,7 @@
+import "dart:io";
+
 import 'package:flutter/material.dart';
+import "package:image_picker_modern/image_picker_modern.dart";
 
 class AppImageUploaderButton extends StatelessWidget {
   @override
@@ -10,7 +13,9 @@ class AppImageUploaderButton extends StatelessWidget {
         elevation: 2,
         fillColor: Colors.white,
         padding: EdgeInsets.only(top: 16, bottom: 16),
-        onPressed: () {},
+        onPressed: () async {
+          File file = await ImagePicker.pickImage(source: ImageSource.gallery);
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[

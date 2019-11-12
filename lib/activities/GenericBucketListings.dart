@@ -10,12 +10,13 @@ abstract class GenericList extends StatelessWidget {
   final String filter;
 
   Widget bucketItemsBuilder(List<dynamic> items);
-
   GenericList({this.action, this.filter});
-
-  Future<List<dynamic>> dataLoadeer() async {
+  Future<List<dynamic>> dataLoader() async {
     String rawBucketResponse = await action.getBucketItems();
+    print(rawBucketResponse);
+
     List<dynamic> convertedRawToList = json.decode(rawBucketResponse);
+
     return convertedRawToList;
   }
 
@@ -23,8 +24,9 @@ abstract class GenericList extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return FutureBuilder(
-        future: dataLoadeer(),
+        future: dataLoader(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
+          print(snapshot.data);
           switch (snapshot.connectionState) {
             case ConnectionState.none:
               return GenericLoadingWidgetContainer();
@@ -37,7 +39,7 @@ abstract class GenericList extends StatelessWidget {
               break;
             case ConnectionState.done:
               return Container(
-                color: Colors.blueGrey,
+                color: Color.fromRGBO(0, 30, 0, .9),
                 child: bucketItemsBuilder(snapshot.data),
               );
               break;

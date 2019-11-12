@@ -19,11 +19,6 @@ class NewCategory extends StatefulWidget {
 }
 
 class _NewProductState extends State<NewCategory> {
-  String _caption;
-  String _description;
-  String _label;
-  String _type;
-  String _image;
   String _id;
   bool _isNew;
   bool generic;

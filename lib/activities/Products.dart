@@ -1,9 +1,9 @@
-import "dart:convert";
-
 import "package:flutter/material.dart";
 
+import "./CreateProduct.dart";
+import "./GenericBucketListings.dart";
 import "../data/models/ProductModel.dart";
-import '../data/restActions.dart';
+import "../data/restActions.dart";
 import "../widgets/AppWidgets.dart";
 
 class ProductsViewRoute extends MaterialPageRoute {
@@ -22,77 +22,144 @@ class ProductStateful extends StatefulWidget {
 }
 
 class _ProductState extends State<ProductStateful> {
-  List<ProductModel> _items = new List<ProductModel>();
-  bool isLoaded = false;
   List<Map<String, String>> filter;
-
-  Future<bool> loadProducts() async {
-    String rawProducts = await ProductActions().getBucketItems();
-    //parse rawProducts to List;
-    List<dynamic> list = json.decode(rawProducts);
-    // convert to approprate list format
-    ProductListModel productListModel = ProductListModel(list);
-    setState(() {
-      this._items.addAll(productListModel.items);
-      isLoaded = true;
-    });
-    return true;
-  }
 
   @override
   Widget build(BuildContext context) {
-    Widget listenings() {
-      return AppPrimaryScaffold(
-        title: "Products",
-        actions: <Widget>[
-          RawMaterialButton(
-            onPressed: () {
-              Navigator.pushNamed(context, "/create-product");
-            },
-            child: Icon(Icons.add),
-          ),
-          SizedBox(
-            width: 16,
-          )
-        ],
-        body: ListView(
-          children: <Widget>[
-            for (int index = 0; index < _items.length; index++)
-              ProductItemWidget(
-                product: _items[index],
-              )
-          ],
+    return AppPrimaryScaffold(
+      title: "Products",
+      actions: <Widget>[
+        RawMaterialButton(
+          onPressed: () {},
+          child: Icon(Icons.add),
+          constraints: BoxConstraints.tightFor(width: 70),
         ),
+        RawMaterialButton(
+          onPressed: () {
+            showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return Container(
+                    color: Colors.transparent,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: 16, right: 16, top: 14, bottom: 14),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              SizedBox(
+                                height: 30,
+                                child: Image.asset("images/product.jpg"),
+                              ),
+                              Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Products filter",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ))
+                            ],
+                          ),
+                        ),
+                        Divider(
+                          endIndent: 0,
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              SwitchListTile(
+                                value: true,
+                                onChanged: (value) {},
+                                title: Text("ASENDING"),
+                              ),
+                              Slider(
+                                  label: "Start price",
+                                  value: 100,
+                                  min: 10,
+                                  max: 100000,
+                                  divisions: 10,
+                                  onChanged: null),
+                              PopupMenuButton(
+                                itemBuilder: (BuildContext context) {},
+                                child: ListTile(
+                                  title: Text("LIST BY CATGEORY -"),
+                                ),
+                              ),
+                              PopupMenuButton(
+                                itemBuilder: (BuildContext context) {},
+                                child: ListTile(
+                                  title: Text("LIST BY BRAND"),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Divider(
+                          endIndent: 0,
+                        ),
+                        Padding(
+                            padding:
+                                EdgeInsets.only(left: 16, right: 16, bottom: 8),
+                            child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: FlatButton(
+                                onPressed: () {},
+                                child: Text("Update list"),
+                              ),
+                            ))
+                      ],
+                    ),
+                  );
+                });
+          },
+          child: Icon(Icons.filter_list),
+          constraints: BoxConstraints.tightFor(width: 70),
+        ),
+      ],
+      body: ProductsListings(filter: ""),
+    );
+  }
+}
+
+class ProductsListings extends GenericList {
+  final String filter;
+  ProductsListings({this.filter})
+      : super(action: new ProductActions(), filter: filter);
+
+  @override
+  Widget bucketItemsBuilder(List items) {
+    // TODO: implement bucketItemsBuilder
+    Iterable<Widget> itemsWidgetList =
+        ProductListModel(items).items.map((ProductModel product) {
+      return ProductItemWidget(
+        product: product,
       );
-    }
+    });
 
-    return FutureBuilder(
-        future: loadProducts(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-              return GenericLoadingWidget();
-              break;
-            case ConnectionState.waiting:
-              return GenericLoadingWidget();
-              break;
-            case ConnectionState.active:
-              return GenericLoadingWidget();
-              break;
-            case ConnectionState.done:
-              return listenings();
-              break;
-          }
+    List<Widget> itemsList = itemsWidgetList.toList();
 
-          return null;
-        });
+    // TODO: implement bucketItemsBuilder
+    return Container(
+      child: itemsList.length == 0
+          ? Center(
+              child: Column(),
+            )
+          : ListView(children: itemsList),
+    );
   }
 }
 
 class ProductItemWidget extends StatelessWidget {
   final ProductModel product;
 
-  ProductItemWidget({this.product});
+  ProductItemWidget({@required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -102,13 +169,22 @@ class ProductItemWidget extends StatelessWidget {
       child: Card(
           child: RawMaterialButton(
         splashColor: Colors.blue,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) {
+            return ProductEditor(id: product.id);
+          }));
+        },
         child: Container(
             padding: EdgeInsets.all(12),
             child: Row(
               children: <Widget>[
                 CircleAvatar(
                   backgroundColor: Colors.green,
+                  child: Image.asset(
+                    "images/product.jpg",
+                    fit: BoxFit.fill,
+                  ),
                 ),
                 SizedBox(
                   width: 12,
@@ -119,7 +195,9 @@ class ProductItemWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        product.id,
+                        product.title != null
+                            ? product.title
+                            : "Your product name",
                         style: TextStyle(
                           inherit: true,
                           fontWeight: FontWeight.bold,
@@ -129,7 +207,9 @@ class ProductItemWidget extends StatelessWidget {
                         height: 4,
                       ),
                       Text(
-                        "This is just a breif of the description for this product",
+                        product.description != null
+                            ? product.description
+                            : "This is just a breif of the description for this product",
                         style: Theme.of(context).textTheme.caption,
                       ),
                       SizedBox(
@@ -139,6 +219,17 @@ class ProductItemWidget extends StatelessWidget {
                         children: <Widget>[],
                       )
                     ],
+                  ),
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                RawMaterialButton(
+                  constraints: BoxConstraints.tightFor(),
+                  onPressed: null,
+                  child: Icon(
+                    Icons.arrow_forward,
+                    color: Colors.black,
                   ),
                 ),
                 SizedBox(

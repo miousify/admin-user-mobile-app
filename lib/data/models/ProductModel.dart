@@ -1,5 +1,6 @@
 class ProductModel {
   String id;
+  String title;
   String description;
   String caption;
   double sellingPrice;
@@ -9,6 +10,7 @@ class ProductModel {
 
   ProductModel(
       {this.id,
+      this.title = "",
       this.description = "",
       this.category = "",
       this.caption = "",
@@ -17,15 +19,19 @@ class ProductModel {
       this.image = ""}) {
     print(id);
   }
-
   ProductModel.fromJson(Map map)
       : id = map['_id'],
+        title = map["title"],
         description = map['description'],
         caption = map['caption'],
         sellingPrice = map['"sellingPrice'],
         category = map['category'],
         available = map['available'],
         image = map['image'];
+
+  Map getMap() {
+    return {};
+  }
 }
 
 ProductModel model = ProductModel();
@@ -35,6 +41,7 @@ class ProductListModel {
   ProductListModel(List convertedList) {
     convertedList.forEach((node) {
       var product = node['item'];
+      print(product);
       this.items.add(ProductModel.fromJson(product));
     });
   }

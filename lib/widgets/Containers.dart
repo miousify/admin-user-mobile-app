@@ -122,4 +122,18 @@ class BeatifulContentPanel extends StatelessWidget {
   }
 }
 
-//
+class AppSpacedCard extends StatelessWidget {
+  final Widget child;
+  AppSpacedCard({this.child});
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Container(
+        padding: EdgeInsets.all(24),
+        child: this.child,
+      ),
+    );
+  }
+}

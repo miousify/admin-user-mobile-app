@@ -1,4 +1,4 @@
-class CategoryModel {
+class StoreModel {
   String id;
   String description;
   String caption;
@@ -7,7 +7,7 @@ class CategoryModel {
   bool available;
   String image;
 
-  CategoryModel(
+  StoreModel(
       {this.id,
       this.description = "",
       this.category = "",
@@ -18,7 +18,7 @@ class CategoryModel {
     print(id);
   }
 
-  CategoryModel.fromJson(Map map)
+  StoreModel.fromJson(Map map)
       : id = map['_id'],
         description = map['description'],
         caption = map['caption'],
@@ -29,15 +29,5 @@ class CategoryModel {
 
   Map getMap() {
     return {};
-  }
-}
-
-class CategoryListModel {
-  List<CategoryModel> items = List<CategoryModel>();
-  CategoryListModel(List convertedList) {
-    convertedList.forEach((node) {
-      var product = node['item'];
-      this.items.add(CategoryModel.fromJson(product));
-    });
   }
 }

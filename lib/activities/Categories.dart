@@ -1,9 +1,9 @@
-import "dart:convert";
-
 import "package:flutter/material.dart";
 
+import "./GenericBucketListings.dart";
 import "../data/models/CategoryModel.dart";
 import "../data/restActions.dart";
+import "../widgets/AppWidgets.dart";
 
 class CategoriesViewRoute extends MaterialPageRoute {
   CategoriesViewRoute()
@@ -21,77 +21,40 @@ class CategoryStateful extends StatefulWidget {
 }
 
 class _CategoryStateView extends State<CategoryStateful> {
-  bool isLoaded = false;
-
-  List<CategoryModel> items = <CategoryModel>[];
-
-  _CategoryStateView() {
-    CategoryActions().getBucketItems().then((String response) {
-      List<dynamic> list = json.decode(response);
-
-      setState(() {
-        items.addAll(CategoryListModel(list).items);
-        isLoaded = true;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    Widget categoryItem() {
-      return Container(
-          margin: EdgeInsets.only(top: 16, left: 12, right: 12),
-          child: Card(
-              child: Container(
-            child: ListTile(
-              title: Text("Category name",
-                  style: Theme.of(context).textTheme.subhead),
-              subtitle: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[Text("Category description")],
-              ),
-              leading: Icon(Icons.threesixty),
-            ),
-          )));
-    }
+    return AppPrimaryScaffold(
+      title: "Categories",
+      body: CategoryListingsWidget(),
+    );
+  }
+}
 
-    Widget loadingView() {
-      return Scaffold(
-        appBar: AppBar(title: Text("Categories")),
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
+class CategoryListingsWidget extends GenericList {
+  CategoryListingsWidget() : super(action: CategoryActions(), filter: "");
+
+  @override
+  Widget bucketItemsBuilder(List items) {
+    // TODO: implement bucketItemsBuilder
+    items.clear();
+    print(items);
+
+    Iterable<Widget> itemsWidgetList =
+        CategoryListModel(items).items.map((CategoryModel product) {
+      return ListTile(
+        title: Text("Category"),
       );
-    }
+    });
 
-    Widget loadedView() {
-      return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: Text("Categories"),
-          actions: <Widget>[
-            RawMaterialButton(
-              onPressed: () {
-                Navigator.pushNamed(context, "/create-category");
-              },
-              child: Icon(Icons.add),
-            ),
-            SizedBox(
-              width: 16,
+    List<Widget> itemsList = itemsWidgetList.toList();
+
+    // TODO: implement bucketItemsBuilder
+    return Container(
+      child: itemsList.length == 0
+          ? Center(
+              child: Text("nothing to show"),
             )
-          ],
-          backgroundColor: Colors.blue,
-        ),
-        body: ListView(
-          children: <Widget>[
-            for (int index = 0; index < items.length; index++) categoryItem()
-          ],
-        ),
-      );
-    }
-
-    // TODO: implement build
-    return isLoaded == true ? loadedView() : loadingView();
+          : Column(children: itemsList),
+    );
   }
 }

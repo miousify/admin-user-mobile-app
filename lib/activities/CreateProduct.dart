@@ -1,113 +1,143 @@
+import "dart:convert";
+
 import 'package:flutter/material.dart';
 
 import "../data/restActions.dart";
 import "../widgets/AppWidgets.dart";
 
 class CreateProductWidget extends MaterialPageRoute {
-  bool isNew;
-  String id;
-  CreateProductWidget({this.isNew, this.id})
+  final String id;
+  CreateProductWidget({this.id})
       : super(builder: (BuildContext build) {
-          return NewProduct();
+          return ProductEditor(
+            id: id,
+          );
         });
 }
 
-class NewProduct extends StatefulWidget {
+class ProductEditor extends StatefulWidget {
+  final String id;
+  ProductEditor({this.id});
+
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return _NewProductState();
+    return _NewProductState(id);
   }
 }
 
-class _NewProductState extends State<NewProduct> {
-  String _productTitle;
+class _NewProductState extends State<ProductEditor> {
+  String id;
+  _NewProductState(this.id);
   String title;
   String description;
   String image;
   String category;
   String caption;
-  String _productDescrption;
-  int _currentPage = 0;
-  bool _saveingProduct = false;
-  bool _savedProduct = false;
-  bool _isNew = true;
-  String _productId = "";
-
+  bool viewLoaded = false;
   bool sendingRequest = false;
+  Map<String, dynamic> product;
 
-  _NewProductState() {}
-
-  List<ExpansionPanel> expansionPanels;
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _productTitle = "Product name";
-    _productDescrption = "Product description goes here";
-  }
+  initState() {
+    if (id != null) {
+      ProductActions().getBucketItem(id).then((String itemResponse) {
+        Map response = json.decode(itemResponse);
+        setState(() {
+          product = response['item'];
+          title = product['title'];
+          description = product['description'];
+          caption = product['caption'];
+        });
 
-  void _update() async {
-    // updates a product
-  }
-  void _save() async {
-    print("sent request");
-
-    ProductActions productActions = new ProductActions();
-    Map map = {
-      "title": "title",
-      "caption": "caption",
-      "description": "description",
-      "image": "image",
-      "category": "category"
-    };
-
-    if (false == true) {
-      dynamic response = await productActions.putInBucket(this._productId, map);
+        setState(() {
+          viewLoaded = true;
+        });
+      }).catchError((error) {
+        print(error);
+        viewLoaded = true;
+      });
     } else {
-      dynamic response = await productActions.postToBucket(map);
-      print("successfully posted");
-      print(response);
-      // on added. load products page
+      print("about to create a new product");
+      viewLoaded = true;
     }
   }
 
-  Widget page1() {
-    return Container(
+  save() async {
+    Map map = {"title": title, "description": description, "caption": caption};
+    if (id == null) {
+      setState(() {
+        sendingRequest = true;
+      });
+      String response = await ProductActions().postToBucket(map);
+      setState(() {
+        sendingRequest = false;
+      });
+      if (response == null) {
+        // something went wrong.
+        return null;
+      }
+    } else {
+      map.addAll({"_id": id});
+      setState(() {
+        sendingRequest = true;
+      });
+      bool check = await ProductActions().putInBucket(id, map);
+      setState(() {
+        sendingRequest = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget page1 = Container(
       margin: EdgeInsets.only(top: 12, bottom: 12, left: 12, right: 12),
       child: ListView(
         children: <Widget>[
-          Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            child: Container(
-              padding: EdgeInsets.all(16),
+          AppSpacedCard(
               child: Column(
+            children: <Widget>[
+              Row(
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        "Basic Details",
-                        style: Theme.of(context).textTheme.title,
-                      ),
-                    ],
+                  Text(
+                    "Basic Details",
+                    style: Theme.of(context).textTheme.title,
                   ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  AppPlainInputWidget(hint: "Product name"),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  AppPlainInputWidget(hint: "Caption"),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  AppPlainInputWidget(hint: "Description")
                 ],
               ),
-            ),
-          ),
+              SizedBox(
+                height: 12,
+              ),
+              AppPlainInputWidget(
+                hint: "Product name",
+                value: title,
+                onSubmit: (String value) {
+                  title = value;
+                },
+              ),
+              SizedBox(
+                height: 12,
+              ),
+              AppPlainInputWidget(
+                hint: "Caption",
+                value: caption,
+                onSubmit: (String value) {
+                  caption = value;
+                },
+              ),
+              SizedBox(
+                height: 12,
+              ),
+              AppPlainInputWidget(
+                hint: "Description",
+                value: "productivity",
+                onSubmit: (String value) {
+                  description = value;
+                },
+              )
+            ],
+          )),
           SizedBox(
             height: 12,
           ),
@@ -115,203 +145,77 @@ class _NewProductState extends State<NewProduct> {
           SizedBox(
             height: 12,
           ),
-          Card(
-            borderOnForeground: true,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            child: Container(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Stock",
-                    style: Theme.of(context).textTheme.title,
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                              contentPadding: EdgeInsets.all(14),
-                              prefixIcon: Icon(
-                                Icons.attach_money,
-                                color: Theme.of(context).iconTheme.color,
-                              ),
-                              hintText: "COST PRICE",
-                              helperText: "Cost price",
-                              border: OutlineInputBorder()),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 12,
-                      ),
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                              contentPadding: EdgeInsets.all(14),
-                              prefixIcon: Icon(Icons.attach_money,
-                                  color: Theme.of(context).iconTheme.color),
-                              hintText: "COST PRICE",
-                              helperText: "Cost price",
-                              border: OutlineInputBorder()),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(14),
-                        prefixIcon: Icon(
-                          Icons.view_comfy,
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        hintText: "Available products",
-                        helperText: "Product availbel, e.g 10",
-                        border: OutlineInputBorder()),
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                ],
-              ),
+          AppSpacedCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "Stock",
+                  style: Theme.of(context).textTheme.title,
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: AppPlainInputWidget(hint: "Description"),
+                    ),
+                    SizedBox(
+                      width: 24,
+                    ),
+                    Expanded(child: AppPlainInputWidget(hint: "Description"))
+                  ],
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                AppPlainInputWidget(hint: "Description"),
+                SizedBox(
+                  height: 12,
+                ),
+              ],
             ),
           )
         ],
       ),
     );
-  }
 
-  Widget page2() {
-    return Container(
-      padding: EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          AppBoxInput(
-            hint: "Hint",
-            label: "Label",
-            helper: "Helper",
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(
-                color: Colors.white70,
-                borderRadius: BorderRadius.all(Radius.elliptical(10, 10))),
-            child: Container(
-              padding: EdgeInsets.all(8),
-              height: 150,
-            ),
-          ),
-          SizedBox(
-            height: 12,
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Expanded(
-                child: SizedBox(),
-              ),
-              SizedBox(
-                width: 12,
-              ),
-              Expanded(
-                child: RaisedButton(
-                  onPressed: () {},
-                  child: Text("Add Categories"),
-                ),
-              )
-            ],
-          ),
-          SizedBox(
-            height: 12,
-          ),
-          AppSelectMenu(label: "Categories", items: <MapEntry<String, Widget>>[
-            MapEntry("Key", Text("View")),
-            MapEntry("Key2", Text("View")),
-            MapEntry("Ke3", Text("View"))
-          ]),
-          SizedBox(
-            height: 12,
-          ),
-          AppSelectMenu(label: "Brand", items: <MapEntry<String, Widget>>[
-            MapEntry("Key", Text("View")),
-            MapEntry("Key2", Text("View")),
-            MapEntry("Ke3", Text("View"))
-          ]),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
     // TODO: implement build
-
-    Widget currentView;
-    switch (_currentPage) {
-      case 0:
-        currentView = page1();
-        break;
-
-      case 1:
-        currentView = page2();
-        break;
-    }
-
     return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-            onTap: (index) {
-              this.setState(() {
-                _currentPage = index;
-              });
-            },
-            items: [
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.input), title: Text("Basic")),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.group_work), title: Text("Classification")),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), title: Text("Settings"))
-            ]),
         appBar: AppBar(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           iconTheme: Theme.of(context).iconTheme,
           backgroundColor: Color.fromRGBO(0, 90, 0, .9),
           actions: <Widget>[
             RawMaterialButton(
-              onPressed: () {
-                _save();
+              onPressed: () async {
+                // showModalBottomSheet(context: null, builder: null);
+                await save();
               },
-              child: Icon(
-                Icons.save,
-                color: Colors.white,
-              ),
-            )
+              child: sendingRequest == true
+                  ? Align(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Icon(
+                      Icons.save,
+                      color: Colors.white,
+                    ),
+            ),
+            PopupMenuButton(itemBuilder: (BuildContext context) {
+              return [PopupMenuItem(child: Text("Delete"))];
+            })
           ],
           title: Text(
-            _productTitle,
+            "PRODUCT PAGEE",
             style: Theme.of(context).textTheme.title.apply(color: Colors.white),
           ),
         ),
-        bottomSheet: BottomSheet(
-            onClosing: () {},
-            builder: (BuildContext context) {
-              return Container(
-                color: Colors.purple,
-                height: 0,
-                child: LinearProgressIndicator(),
-              );
-            }),
-        body: currentView);
+        body: viewLoaded == true
+            ? page1
+            : Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                ),
+              ));
   }
 }

@@ -55,6 +55,7 @@ class InfoBox extends StatelessWidget {
         ))
       ],
     );
+
     // TODO: implement build
     return AspectRatio(
       child: Container(
@@ -62,7 +63,7 @@ class InfoBox extends StatelessWidget {
         child: Stack(
           children: <Widget>[
             BeatifulContentPanel(
-              userBackgroundImage: true,
+              userBackgroundImage: false,
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -186,7 +187,6 @@ class IndexBucketsInfo extends StatelessWidget {
                     Navigator.pushNamed(context, "/create-product",
                         arguments: {"isNew": true});
                   },
-                  color: Colors.green,
                   child: Text("Create product",
                       style: Theme.of(context)
                           .textTheme
@@ -212,7 +212,6 @@ class IndexBucketsInfo extends StatelessWidget {
                     Navigator.pushNamed(context, "/create-category",
                         arguments: {"isNew": true});
                   },
-                  color: Colors.green,
                   child: Text(
                     "Create category",
                     style: Theme.of(context)
@@ -267,8 +266,7 @@ class _BucketInfo extends StatelessWidget {
                 ),
                 Divider(
                   height: 10,
-                  thickness: 2,
-                  color: Colors.green,
+                  thickness: 3,
                 ),
                 SizedBox(
                   height: 10,
