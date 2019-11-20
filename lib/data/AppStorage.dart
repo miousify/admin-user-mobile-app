@@ -1,14 +1,11 @@
-import "package:localstorage/localstorage.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 class AppStorage {
-  final LocalStorage storage = new LocalStorage("app-storage");
-
   final String IS_LOGGIN_KEY = "isLoggedin";
   final String STORE_AUTH = "store-auth";
   final String STORE_INTERNAL_ID = "store-internal-id";
-
   final String STORE_TOKEN = "store-token";
+
   Future<bool> storeAuth(auth) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print(auth);
@@ -17,15 +14,17 @@ class AppStorage {
     prefs.setString(STORE_INTERNAL_ID, auth['internal_id']);
     prefs.setString(STORE_TOKEN, auth['token']);
 
-//    await storage.setItem(IS_LOGGIN_KEY, true);
-//    await storage.setItem(STORE_AUTH, auth);
+    return true;
+  }
 
+  Future<bool> destroySession() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
     return true;
   }
 
   Future<dynamic> getStoreAuth() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     Map auth;
 
     if (prefs.get(IS_LOGGIN_KEY)) {

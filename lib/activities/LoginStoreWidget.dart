@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import "../data/AppStorage.dart";
 import "../data/restActions.dart";
+import "../widgets/AppWidgets.dart";
 
 class LoginStore extends StatefulWidget {
   final Function onCreateStore;
@@ -32,9 +33,11 @@ class _LoginStoreState extends State<LoginStore> {
     //successfull login
     //store auth details
     Map data = {"store_id": store_id, "password": password};
+
     setState(() {
       sentRequest = true;
     });
+    print(data);
     Map res = await StoreRestAction().loginStore(data);
     setState(() {
       sentRequest = false;
@@ -61,6 +64,7 @@ class _LoginStoreState extends State<LoginStore> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Card(
+              color: Color.fromRGBO(190, 220, 190, 10),
               child: Container(
                   padding: EdgeInsets.symmetric(vertical: 24, horizontal: 24),
                   child: Column(
@@ -82,63 +86,54 @@ class _LoginStoreState extends State<LoginStore> {
                       ),
                       SizedBox(height: 12),
                       Divider(),
-                      TextField(
-                        decoration: InputDecoration(labelText: "Store id"),
-                        onChanged: (String value) {
-                          this.setState(() {
+                      SizedBox(height: 12),
+                      AppPlainInputWidget(
+                        label: "Store name",
+                        value: this.store_id,
+                        onSubmit: (String value) {
+                          setState(() {
                             store_id = value;
+                            print(value);
                           });
                         },
                       ),
-                      SizedBox(height: 24),
-                      TextField(
-                        decoration: InputDecoration(labelText: "Password"),
-                        onChanged: (String value) {
-                          this.setState(() {
+                      AppPlainInputWidget(
+                        label: "Password",
+                        value: this.password,
+                        onSubmit: (String value) {
+                          setState(() {
                             password = value;
+                            print(value);
                           });
                         },
                       ),
-                      SizedBox(height: 24),
+                      SizedBox(height: 12),
                       Row(
                         children: <Widget>[
                           Expanded(
-                              child: RaisedButton(
-                            color: Color.fromRGBO(0, 50, 0, .9),
-                            onPressed: () {
+                              child: AppPrimaryButton(
+                            label: "Login",
+                            onClick: () {
                               this.login();
                             },
-                            child: Text(
-                              "LOGIN",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .button
-                                  .apply(color: Colors.white),
-                            ),
                           )),
                           SizedBox(
                             width: 16,
                           ),
                           Expanded(
-                              child: RaisedButton(
-                            color: Color.fromRGBO(0, 50, 0, .9),
-                            onPressed: () {
+                              child: AppPlainButton(
+                            onClick: () {
                               this.onCreateStore();
                             },
-                            child: Text(
-                              "CREATE STORE",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .button
-                                  .apply(color: Colors.white),
-                            ),
+                            label: "Create Store",
                           ))
                         ],
                       ),
                       SizedBox(height: 8),
                       Center(
                         child: Text(
-                            "Forgot your password, you would be able to recover that, please contact our supports team at the moment",
+                            "Forgot your password, you would be able to recover that, please "
+                            "contact our supports team at the moment",
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.caption),
                       )

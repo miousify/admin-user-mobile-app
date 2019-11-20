@@ -130,6 +130,7 @@ class _ProductState extends State<ProductStateful> {
 
 class ProductsListings extends GenericList {
   final String filter;
+
   ProductsListings({this.filter})
       : super(action: new ProductActions(), filter: filter);
 
@@ -181,10 +182,12 @@ class ProductItemWidget extends StatelessWidget {
               children: <Widget>[
                 CircleAvatar(
                   backgroundColor: Colors.green,
-                  child: Image.asset(
-                    "images/product.jpg",
-                    fit: BoxFit.fill,
-                  ),
+                  child: product.image == null
+                      ? Image.network(
+                          "images/product.jpg",
+                          fit: BoxFit.fill,
+                        )
+                      : Image.network(product.image),
                 ),
                 SizedBox(
                   width: 12,
@@ -222,19 +225,26 @@ class ProductItemWidget extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  width: 12,
+                  width: 8,
                 ),
-                RawMaterialButton(
-                  constraints: BoxConstraints.tightFor(),
-                  onPressed: null,
-                  child: Icon(
-                    Icons.arrow_forward,
-                    color: Colors.black,
+                PopupMenuButton(
+                  child: SizedBox(
+                    width: 30,
+                    child: Icon(
+                      Icons.more_vert,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 12,
-                ),
+                  itemBuilder: (BuildContext context) {
+                    return <PopupMenuItem>[
+                      PopupMenuItem(child: Text("View")),
+                      PopupMenuItem(
+                        child: Text("Delete"),
+                      ),
+                      PopupMenuItem(child: Text("Mute"))
+                    ];
+                  },
+                )
               ],
             )),
       )),

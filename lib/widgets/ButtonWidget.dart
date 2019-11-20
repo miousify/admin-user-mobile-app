@@ -3,35 +3,194 @@ import "dart:io";
 import 'package:flutter/material.dart';
 import "package:image_picker_modern/image_picker_modern.dart";
 
-class AppImageUploaderButton extends StatelessWidget {
+class AppImageUploaderButton extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _AppImageUploaderState();
+  }
+}
+
+class _AppImageUploaderState extends State<AppImageUploaderButton> {
+  File imageFile;
+  bool uploading;
+  bool completed;
+  Function onUploadFile;
+
+  selectFile() async {
+    setState(() {
+      uploading = true;
+    });
+    File file = await ImagePicker.pickImage(source: ImageSource.gallery);
+    // upload file
+    setState(() {
+      imageFile = file;
+      completed = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-      child: RawMaterialButton(
-        shape: StadiumBorder(),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.elliptical(7, 7))),
         elevation: 2,
-        fillColor: Colors.white,
-        padding: EdgeInsets.only(top: 16, bottom: 16),
-        onPressed: () async {
-          File file = await ImagePicker.pickImage(source: ImageSource.gallery);
-        },
+        padding: EdgeInsets.only(top: 14, bottom: 14),
+        onPressed: selectFile,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Icon(
               Icons.file_upload,
-              color: Colors.blue,
+              color: Colors.white,
             ),
             SizedBox(
               width: 12,
             ),
             Text(
-              "Upload IMAGE",
+              "Upload Product image",
+              style:
+                  Theme.of(context).textTheme.button.apply(color: Colors.white),
             )
           ],
         ),
       ),
+    );
+  }
+}
+
+class AppCardButton extends StatelessWidget {
+  final String label;
+  final IconData leadingIcon;
+  final IconData trailingIcon;
+  final Color background;
+  final Color color;
+  final TextAlign textAlign;
+  AppCardButton(
+      {@required this.label,
+      this.leadingIcon,
+      this.trailingIcon,
+      this.background,
+      this.color,
+      this.textAlign});
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Card(
+      color: this.background == null ? null : this.background,
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: Row(
+          children: <Widget>[
+            Row(children: [
+              Icon(
+                null,
+                color: this.color == null ? null : this.color,
+              ),
+              Text(
+                this.label,
+                style: Theme.of(context)
+                    .textTheme
+                    .button
+                    .apply(color: this.color == null ? null : this.color),
+                textAlign: this.textAlign,
+              )
+            ]),
+            Icon(
+              null,
+              color: this.color == null ? null : this.color,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AppPrimaryButton extends StatelessWidget {
+  final String label;
+
+  final Function onClick;
+  AppPrimaryButton({this.label, this.onClick});
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return RaisedButton(
+      padding: EdgeInsets.all(12),
+      onPressed: this.onClick,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.elliptical(5, 5))),
+      child: Text(this.label,
+          style: Theme.of(context).textTheme.button.apply(color: Colors.white)),
+    );
+  }
+}
+
+class AppSecondaryButton extends StatelessWidget {
+  final String label;
+
+  final Function onClick;
+
+  AppSecondaryButton({this.onClick, this.label});
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return RaisedButton(
+      padding: EdgeInsets.all(12),
+      onPressed: this.onClick,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.elliptical(5, 5))),
+      child: Text(this.label,
+          style: Theme.of(context).textTheme.button.apply(color: Colors.white)),
+    );
+  }
+}
+
+class AppPlainButton extends StatelessWidget {
+  final String label;
+  final Function onClick;
+  AppPlainButton({this.onClick, this.label});
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return FlatButton(
+      padding: EdgeInsets.all(12),
+      onPressed: this.onClick,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+          side: BorderSide(width: 1),
+          borderRadius: BorderRadius.all(Radius.elliptical(5, 5))),
+      child: Text(this.label,
+          style: Theme.of(context)
+              .textTheme
+              .button
+              .apply(color: Color.fromRGBO(0, 50, 0, .9))),
+    );
+  }
+}
+
+class AppOutlinedButton extends StatelessWidget {
+  final String label;
+  final Function onClick;
+
+  AppOutlinedButton({this.label, this.onClick});
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return FlatButton(
+      padding: EdgeInsets.all(12),
+      onPressed: this.onClick,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.elliptical(7, 7))),
+      child: Text(this.label,
+          style: Theme.of(context)
+              .textTheme
+              .button
+              .apply(color: Color.fromRGBO(0, 50, 0, .9))),
     );
   }
 }

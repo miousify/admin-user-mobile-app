@@ -38,6 +38,14 @@ class MainAppState extends State<MyApp> {
     print("finnaly logged in");
   }
 
+  onLoggedout() {
+    setState(() {
+      isLoggedIN = false;
+    });
+
+    print("finnaly logged out");
+  }
+
   @override
   Widget build(BuildContext context) {
     Map<String, WidgetBuilder> routes = {
@@ -99,8 +107,10 @@ class MainAppState extends State<MyApp> {
             return GenericLoadingWidget();
             break;
           case ConnectionState.done:
-            return snapshot.data != null
-                ? IndexPage()
+            return snapshot.data == null
+                ? IndexPage(
+                    onLogout: this.onLoggedout,
+                  )
                 : LoginWidget(
                     onLoggedin: this.onLoggedIn,
                   );
@@ -119,18 +129,16 @@ class MainAppState extends State<MyApp> {
         routes: routes,
         initialRoute: "",
         theme: ThemeData(
-            iconTheme: IconThemeData(color: Colors.white),
-            // This is the theme of your application.
-            // Try running your application with "flutter run". You'll see the
-            // application has a blue toolbar. Then, without quitting the app, try
-            // changing the primarySwatch below to Colors.green a/**/nd then invoke
-            // "hot reload" (press "r" in the console where you ran "flutter run",
-            // or simply save your changes to "hot reload" in a Flutter IDE).
-            // Notice that the counter didn't reset back to zero; the application
-            // is not restarted.
-            dividerColor: Color.fromRGBO(0, 50, 0, .9),
+            iconTheme: IconThemeData(color: Colors.black),
+            appBarTheme: AppBarTheme(
+                color: Colors.white,
+                textTheme: TextTheme(
+                    title: TextStyle(
+                        color: Color.fromRGBO(0, 50, 0, .9),
+                        fontWeight: FontWeight.bold)),
+                iconTheme: IconThemeData(color: Color.fromRGBO(0, 50, 0, .9))),
             buttonTheme:
-                ButtonThemeData(buttonColor: Color.fromRGBO(0, 50, 0, .9))),
+                ButtonThemeData(buttonColor: Color.fromRGBO(10, 100, 20, .9))),
         home: MainStartingPoint);
   }
 }

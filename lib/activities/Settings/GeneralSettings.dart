@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import "../../widgets/AppWidgets.dart";
+
 class GeneralSettings extends MaterialPageRoute {
   GeneralSettings()
       : super(builder: (BuildContext context) {
@@ -19,10 +21,8 @@ class _WidgetStatefulState extends State<_WidgetStateful> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("General settings "),
-      ),
+    return AppPrimaryScaffold(
+      title: "General Settings",
     );
   }
 }

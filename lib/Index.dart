@@ -1,16 +1,24 @@
 import "package:flutter/material.dart";
 
+import "./data/AppStorage.dart";
 import "./widgets/IndexWidgets.dart";
 
 class IndexPage extends StatefulWidget {
+  Function onLogout;
+
+  IndexPage({this.onLogout});
+
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return _IndexState();
+    return _IndexState(onLogout: this.onLogout);
   }
 }
 
 class _IndexState extends State<IndexPage> {
+  Function onLogout;
+
+  _IndexState({this.onLogout});
   @override
   void initState() {
     // TODO: implement initState
@@ -62,7 +70,10 @@ class _IndexState extends State<IndexPage> {
     Widget MainAppbar() {
       return AppBar(
         elevation: 0,
-        leading: Icon(Icons.threesixty, color: Colors.black),
+        iconTheme: IconThemeData(color: Color.fromRGBO(0, 50, 0, .9)),
+        textTheme:
+            TextTheme(title: TextStyle(color: Color.fromRGBO(0, 50, 0, .9))),
+        leading: Icon(Icons.vpn_key, color: Colors.black),
         backgroundColor: Colors.white,
         actions: <Widget>[
           RawMaterialButton(
@@ -93,7 +104,15 @@ class _IndexState extends State<IndexPage> {
                       child: Row(
                     children: <Widget>[Text("Visit Site")],
                   )));
-                  entries.add(PopupMenuItem(child: Text("Logout")));
+                  entries.add(PopupMenuItem(
+                    child: RawMaterialButton(
+                      onPressed: () async {
+                        await AppStorage().destroySession();
+                        this.onLogout();
+                      },
+                      child: Text("Logout"),
+                    ),
+                  ));
                   return entries;
                 }),
           ),
@@ -101,10 +120,7 @@ class _IndexState extends State<IndexPage> {
             width: 12,
           )
         ],
-        title: Text(
-          "Admin",
-          style: TextStyle(color: Colors.blue),
-        ),
+        title: Text("Admin"),
       );
     }
 
@@ -115,15 +131,14 @@ class _IndexState extends State<IndexPage> {
 
     return Scaffold(
       appBar: MainAppbar(),
-      body: ListView(
-        children: <Widget>[
-          InfoBox(
-            loadCustomers: _loadCustomers,
-            loadTransactions: _loadTransactions,
-          ),
-          BriefProductList(),
-          IndexBucketsInfo()
-        ],
+      backgroundColor: Colors.transparent,
+      body: DecoratedBox(
+        position: DecorationPosition.background,
+        decoration: BoxDecoration(color: Color.fromRGBO(220, 225, 220, .9)),
+        child: ListView(
+          children: <Widget>[InfoBox(), IndexBucketsInfo()],
+          //BriefProductList(),
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
           onTap: _bottomOnNavigationItemTap,
@@ -138,7 +153,7 @@ class _IndexState extends State<IndexPage> {
             bottomNavTemp(icon: Icons.category, title: "Categories"),
             bottomNavTemp(
                 icon: Icons.supervised_user_circle, title: "Customers"),
-            bottomNavTemp(icon: Icons.monetization_on, title: "Transactions"),
+            bottomNavTemp(icon: Icons.monetization_on, title: "Orders"),
           ]),
     );
   }

@@ -1,5 +1,10 @@
 import "package:flutter/material.dart";
 
+import "./GenericBucketListings.dart";
+import "../data/models/CustomerModel.dart";
+import "../data/restActions.dart";
+import "../widgets/AppWidgets.dart";
+
 class CustomersViewRoute extends MaterialPageRoute {
   CustomersViewRoute()
       : super(builder: (BuildContext context) {
@@ -34,16 +39,37 @@ class View extends StatelessWidget {
     }
 
     // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(title: Text("Customers")),
-      body: ListView(
-        children: <Widget>[
-          customerItem(),
-          customerItem(),
-          customerItem(),
-          customerItem()
-        ],
-      ),
+    return AppPrimaryScaffold(
+      title: "Customers",
+      body: CustomerListings(),
+    );
+  }
+}
+
+class CustomerListings extends GenericList {
+  CustomerListings() : super(filter: "", action: CustomerActions());
+  @override
+  Widget bucketItemsBuilder(List items) {
+    // TODO: implement bucketItemsBuilder
+    items.clear();
+    print(items);
+
+    Iterable<Widget> itemsWidgetList =
+        CustomerListModel(items).items.map((CustomerModel customer) {
+      return ListTile(
+        title: Text("Customer"),
+      );
+    });
+
+    List<Widget> itemsList = itemsWidgetList.toList();
+
+    // TODO: implement bucketItemsBuilder
+    return Container(
+      child: itemsList.length == 0
+          ? Center(
+              child: Text("Customer not available at the moment"),
+            )
+          : Column(children: itemsList),
     );
   }
 }

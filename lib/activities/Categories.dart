@@ -25,6 +25,15 @@ class _CategoryStateView extends State<CategoryStateful> {
   Widget build(BuildContext context) {
     return AppPrimaryScaffold(
       title: "Categories",
+      actions: <Widget>[
+        RawMaterialButton(
+          onPressed: () {
+            Navigator.pushNamed(context, "/create-category");
+          },
+          child: Icon(Icons.add),
+          constraints: BoxConstraints.tightFor(width: 70),
+        )
+      ],
       body: CategoryListingsWidget(),
     );
   }
@@ -36,13 +45,19 @@ class CategoryListingsWidget extends GenericList {
   @override
   Widget bucketItemsBuilder(List items) {
     // TODO: implement bucketItemsBuilder
-    items.clear();
-    print(items);
-
     Iterable<Widget> itemsWidgetList =
         CategoryListModel(items).items.map((CategoryModel product) {
-      return ListTile(
-        title: Text("Category"),
+      return Container(
+        padding: EdgeInsets.all(12),
+        child: Card(
+          child: ListTile(
+            contentPadding: EdgeInsets.all(12),
+            onTap: () {},
+            leading: CircleAvatar(),
+            title: Text("Category"),
+            trailing: Icon(Icons.chevron_right),
+          ),
+        ),
       );
     });
 

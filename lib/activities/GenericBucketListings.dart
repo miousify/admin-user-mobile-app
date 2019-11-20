@@ -39,7 +39,7 @@ abstract class GenericList extends StatelessWidget {
               break;
             case ConnectionState.done:
               return Container(
-                color: Color.fromRGBO(0, 30, 0, .9),
+                color: Colors.white,
                 child: bucketItemsBuilder(snapshot.data),
               );
               break;

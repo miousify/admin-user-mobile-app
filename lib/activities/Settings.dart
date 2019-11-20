@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
 
 import "../widgets/AppWidgets.dart";
-import "Settings/GeneralSettings.dart";
+import "Settings/ContactWidget.dart";
+import "Settings/Location.dart";
+import "Settings/index.dart";
 
 class SettingsRoute extends MaterialPageRoute {
   SettingsRoute()
@@ -19,45 +21,33 @@ class Settings extends StatelessWidget {
       Navigator.push(context, GeneralSettings());
     }
 
-    Widget settingsLinkWidget({String title}) {
-      return RawMaterialButton(
-        onPressed: generalSettings,
-        child: Container(
-          padding: EdgeInsets.only(left: 12, right: 12),
-          child: ListTile(
-            dense: true,
-            leading: CircleAvatar(),
-            title: Text(title),
-            subtitle: Text("settings subtitle"),
-          ),
-        ),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings page"),
-        backgroundColor: Color.fromRGBO(0, 50, 0, .9),
+        elevation: 2,
+        title: Text(
+          "Settings page",
+          style: Theme.of(context).textTheme.subhead,
+        ),
+        iconTheme: IconThemeData(),
+        textTheme: TextTheme(title: TextStyle()),
+        backgroundColor: Colors.white,
       ),
       body: ListView(
         children: <Widget>[
           Container(
             color: Color.fromRGBO(0, 50, 0, .9),
             child: BeatifulContentPanel(
-              margin: EdgeInsets.all(16),
+              backgroundColor: Colors.white,
+              margin: EdgeInsets.all(14),
+              paddin: EdgeInsets.all(14),
               child: SwitchListTile(
-                activeColor: Colors.blue,
-                activeTrackColor: Colors.transparent,
+                activeColor: Color.fromRGBO(0, 50, 0, .9),
+                activeTrackColor: Colors.grey,
                 value: true,
                 onChanged: (value) {},
                 selected: true,
-                title: Text(
-                  "Enable store",
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle
-                      .apply(color: Colors.white),
-                ),
+                title: Text("Enable store",
+                    style: Theme.of(context).textTheme.subtitle),
                 subtitle: Text(
                   "you must add a card, and a selected plan to successfully enable your store",
                   style: Theme.of(context)
@@ -68,17 +58,71 @@ class Settings extends StatelessWidget {
               ),
             ),
           ),
-          settingsLinkWidget(title: "General"),
-          settingsLinkWidget(title: "UI"),
-          settingsLinkWidget(title: "Business"),
-          Divider(),
-          settingsLinkWidget(title: "Account"),
-          Divider(),
-          settingsLinkWidget(title: "Location"),
-          settingsLinkWidget(title: "Contact"),
-          settingsLinkWidget(title: "Site"),
-          Divider(),
-          settingsLinkWidget(title: "Server"),
+          Column(
+            children: <Widget>[
+              SettingsLinkWidget(
+                title: "Account",
+                trailing: Icons.account_circle,
+                onClick: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return AccountControlWidget();
+                  }));
+                },
+              ),
+              Divider(
+                endIndent: 0,
+              ),
+              SettingsLinkWidget(
+                title: "Business Profile",
+                trailing: Icons.info,
+                onClick: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return BusinessProfileControlWidget();
+                  }));
+                },
+              ),
+              SettingsLinkWidget(
+                title: "Location",
+                trailing: Icons.my_location,
+                onClick: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return LocationControlWidget();
+                  }));
+                },
+              ),
+              SettingsLinkWidget(
+                title: "Contact",
+                trailing: Icons.perm_contact_calendar,
+                onClick: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (BuildContext context) {
+                    return ContactControlWidget();
+                  }));
+                },
+              ),
+              SettingsLinkWidget(
+                title: "Business configuration",
+                trailing: Icons.business_center,
+              ),
+              Divider(),
+              SettingsLinkWidget(
+                title: "Site settings",
+                trailing: Icons.web,
+              ),
+              Divider(),
+              SettingsLinkWidget(
+                title: "Push Notifications",
+                trailing: Icons.notifications,
+              ),
+              SettingsLinkWidget(
+                title: "Configuration",
+                trailing: Icons.settings,
+              ),
+            ],
+          ),
         ],
       ),
     );

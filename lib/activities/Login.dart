@@ -33,46 +33,41 @@ class _LoginWidgetState extends State<LoginWidget> {
 
     // TODO: implement build
     return Scaffold(
-        backgroundColor: Color.fromRGBO(0, 30, 0, .9),
         body: Stack(
+      children: <Widget>[
+        Column(
           children: <Widget>[
-            Column(
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.black,
-                        image: DecorationImage(
-                            image: AssetImage("images/product_add.jpg"),
-                            fit: BoxFit.cover)),
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      CircleAvatar(),
-                      SizedBox(
-                        height: 24,
-                      )
-                    ],
-                  ),
-                )
-              ],
+            Expanded(
+              child: Container(),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                AnimatedCrossFade(
-                    firstChild: loginView,
-                    secondChild: createStoreView,
-                    crossFadeState: _doCreateStore == true
-                        ? CrossFadeState.showSecond
-                        : CrossFadeState.showFirst,
-                    duration: Duration(milliseconds: 500))
-              ],
-            ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  CircleAvatar(
+                    backgroundColor: Colors.grey,
+                  ),
+                  SizedBox(
+                    height: 24,
+                  )
+                ],
+              ),
+            )
           ],
-        ));
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            AnimatedCrossFade(
+                firstChild: loginView,
+                secondChild: createStoreView,
+                crossFadeState: _doCreateStore == true
+                    ? CrossFadeState.showSecond
+                    : CrossFadeState.showFirst,
+                duration: Duration(milliseconds: 500))
+          ],
+        ),
+      ],
+    ));
   }
 }

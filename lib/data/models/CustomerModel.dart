@@ -6,7 +6,6 @@ class CustomerModel {
   String category;
   bool available;
   String image;
-
   CustomerModel(
       {this.id,
       this.description = "",

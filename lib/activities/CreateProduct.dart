@@ -1,9 +1,11 @@
 import "dart:convert";
+import "dart:core";
 
 import 'package:flutter/material.dart';
 
 import "../data/restActions.dart";
 import "../widgets/AppWidgets.dart";
+import "../widgets/independent/BucketItemImageAssetWidget.dart";
 
 class CreateProductWidget extends MaterialPageRoute {
   final String id;
@@ -31,13 +33,21 @@ class _NewProductState extends State<ProductEditor> {
   _NewProductState(this.id);
   String title;
   String description;
-  String image;
   String category;
   String caption;
+
+  double sellingPrice;
+  double costPrice;
+
+  String image;
+  String cover;
+
+  bool available;
+  int quantity;
+
   bool viewLoaded = false;
   bool sendingRequest = false;
   Map<String, dynamic> product;
-
   @override
   initState() {
     if (id != null) {
@@ -48,6 +58,11 @@ class _NewProductState extends State<ProductEditor> {
           title = product['title'];
           description = product['description'];
           caption = product['caption'];
+          image = product['image'];
+          available = product['available'];
+          quantity = product['quantity'];
+          costPrice = product['costPrice'];
+          sellingPrice = product['image'];
         });
 
         setState(() {
@@ -63,131 +78,153 @@ class _NewProductState extends State<ProductEditor> {
     }
   }
 
-  save() async {
-    Map map = {"title": title, "description": description, "caption": caption};
-    if (id == null) {
-      setState(() {
-        sendingRequest = true;
-      });
-      String response = await ProductActions().postToBucket(map);
-      setState(() {
-        sendingRequest = false;
-      });
-      if (response == null) {
-        // something went wrong.
-        return null;
-      }
-    } else {
-      map.addAll({"_id": id});
-      setState(() {
-        sendingRequest = true;
-      });
-      bool check = await ProductActions().putInBucket(id, map);
-      setState(() {
-        sendingRequest = true;
-      });
-    }
+  onSelectCover(imageURI) {
+    print("got cover image");
+    print(imageURI);
+    setState(() {
+      image = imageURI;
+    });
+  }
+
+  onSelectPrimary(imageURI) {
+    setState(() {
+      this.image = imageURI;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget page1 = Container(
-      margin: EdgeInsets.only(top: 12, bottom: 12, left: 12, right: 12),
-      child: ListView(
-        children: <Widget>[
-          AppSpacedCard(
-              child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Text(
-                    "Basic Details",
-                    style: Theme.of(context).textTheme.title,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 12,
-              ),
-              AppPlainInputWidget(
-                hint: "Product name",
-                value: title,
+    save() async {
+      Map<String, dynamic> map = {
+        "title": title,
+        "description": description,
+        "caption": caption,
+        "image": image,
+        "available": available,
+        "quantity": quantity.toString(),
+        "sellingPrice": sellingPrice.toString(),
+        "costPrice": costPrice.toString()
+      };
+
+      if (id == null) {
+        setState(() {
+          sendingRequest = true;
+        });
+        String response = await ProductActions().postToBucket(map);
+        setState(() {
+          sendingRequest = false;
+        });
+        if (response == null) {
+          // something went wrong.
+          return null;
+        }
+      } else {
+        map.addAll({"_id": id});
+        setState(() {
+          sendingRequest = true;
+        });
+        bool check = await ProductActions().putInBucket(id, map);
+        setState(() {
+          sendingRequest = false;
+        });
+      }
+    }
+
+    Widget $_BASIC_FORM = AppPlainFormWidget(
+      formLabel: "Basics",
+      inputElemtents: <Widget>[
+        AppPlainInputWidget(
+          hint: "Product name",
+          value: title,
+          onSubmit: (String value) {
+            setState(() {
+              title = value;
+            });
+          },
+        ),
+        AppPlainInputWidget(
+          hint: "Caption",
+          value: caption,
+          onSubmit: (String value) {
+            setState(() {
+              caption = value;
+            });
+          },
+        ),
+        AppPlainInputWidget(
+          hint: "Description",
+          value: description,
+          onChange: (String value) {
+            description = value;
+          },
+        )
+      ],
+    );
+
+    Widget classificationForm = AppPlainFormWidget(
+      formLabel: "Stock",
+      inputElemtents: <Widget>[
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: AppPlainInputWidget(
+                hint: "Cost price",
+                isNumbered: true,
+                value: costPrice == null ? "" : costPrice.toString(),
                 onSubmit: (String value) {
-                  title = value;
+                  setState(() {
+                    costPrice = double.tryParse(value);
+                  });
                 },
               ),
-              SizedBox(
-                height: 12,
-              ),
-              AppPlainInputWidget(
-                hint: "Caption",
-                value: caption,
-                onSubmit: (String value) {
-                  caption = value;
-                },
-              ),
-              SizedBox(
-                height: 12,
-              ),
-              AppPlainInputWidget(
-                hint: "Description",
-                value: "productivity",
-                onSubmit: (String value) {
-                  description = value;
-                },
-              )
-            ],
-          )),
-          SizedBox(
-            height: 12,
-          ),
-          AppImageUploaderButton(),
-          SizedBox(
-            height: 12,
-          ),
-          AppSpacedCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "Stock",
-                  style: Theme.of(context).textTheme.title,
-                ),
-                SizedBox(
-                  height: 12,
-                ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: AppPlainInputWidget(hint: "Description"),
-                    ),
-                    SizedBox(
-                      width: 24,
-                    ),
-                    Expanded(child: AppPlainInputWidget(hint: "Description"))
-                  ],
-                ),
-                SizedBox(
-                  height: 12,
-                ),
-                AppPlainInputWidget(hint: "Description"),
-                SizedBox(
-                  height: 12,
-                ),
-              ],
             ),
-          )
-        ],
-      ),
+            SizedBox(
+              width: 24,
+            ),
+            Expanded(
+                child: AppPlainInputWidget(
+                    hint: "Selling price",
+                    isNumbered: true,
+                    value: sellingPrice == null ? "" : sellingPrice.toString(),
+                    onSubmit: (String value) {
+                      print(value);
+                      setState(() {
+                        sellingPrice = double.tryParse(value);
+                      });
+                    }))
+          ],
+        ),
+        AppPlainInputWidget(
+            hint: "Quantity",
+            isNumbered: true,
+            value: quantity == null ? "" : quantity.toString(),
+            onSubmit: (String value) {
+              setState(() {
+                print(value);
+                quantity = int.tryParse(value);
+              });
+            }),
+        SwitchListTile(
+          value: available == null ? true : available,
+          onChanged: (v) {
+            setState(() {
+              available = v;
+            });
+          },
+          title: Text("Availability"),
+          subtitle: Text(
+              "is this is not enable, product will not be seen by customers"),
+        )
+      ],
     );
 
     // TODO: implement build
-    return Scaffold(
-        appBar: AppBar(
-          iconTheme: Theme.of(context).iconTheme,
-          backgroundColor: Color.fromRGBO(0, 90, 0, .9),
+    CustomScrollView testView = CustomScrollView(
+      slivers: <Widget>[
+        SliverAppBar(
           actions: <Widget>[
             RawMaterialButton(
+//              constraints: BoxConstraints.tightFor(),
               onPressed: () async {
                 // showModalBottomSheet(context: null, builder: null);
                 await save();
@@ -196,26 +233,53 @@ class _NewProductState extends State<ProductEditor> {
                   ? Align(
                       child: CircularProgressIndicator(),
                     )
-                  : Icon(
-                      Icons.save,
-                      color: Colors.white,
-                    ),
+                  : Icon(Icons.save),
             ),
             PopupMenuButton(itemBuilder: (BuildContext context) {
               return [PopupMenuItem(child: Text("Delete"))];
             })
           ],
-          title: Text(
-            "PRODUCT PAGEE",
-            style: Theme.of(context).textTheme.title.apply(color: Colors.white),
-          ),
-        ),
-        body: viewLoaded == true
-            ? page1
-            : Center(
-                child: CircularProgressIndicator(
-                  backgroundColor: Colors.white,
+          title: Text("Product page"),
+          backgroundColor: Colors.white,
+          expandedHeight: 250,
+          pinned: true,
+          flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.parallax,
+              background: Align(
+                child: BucketItemImageAssetWidget(
+                  onUploadedCover: this.onSelectCover,
+                  onUploadedPrimary: this.onSelectPrimary,
+                  coverLink: this.image,
+                  primaryLink: this.image,
                 ),
+                alignment: Alignment.bottomCenter,
+              )),
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate([
+            Container(
+                child: Container(
+              child: $_BASIC_FORM,
+              padding: EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+            )),
+            Container(
+                child: Container(
+              child: classificationForm,
+              padding: EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+            ))
+          ]),
+        ),
+      ],
+      scrollDirection: Axis.vertical,
+    );
+
+    Scaffold main = Scaffold(
+        body: viewLoaded == true
+            ? testView
+            : Center(
+                child: CircleAvatar(),
               ));
+
+    return main;
   }
 }

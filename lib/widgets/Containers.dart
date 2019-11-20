@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import './CustomWidgets.dart';
-
 class AppRoundedContainer extends StatelessWidget {
   final Widget child;
 
@@ -19,84 +17,17 @@ class AppRoundedContainer extends StatelessWidget {
   }
 }
 
-class BeatifulHomeActionButton extends StatelessWidget {
-  final Function onTap;
-  final String title;
-  final String caption;
-  final String routePath;
-  final bool isIconLeft;
-  BeatifulHomeActionButton(
-      {this.onTap,
-      this.title,
-      this.caption,
-      this.routePath,
-      this.isIconLeft = true});
-
-  @override
-  Widget build(BuildContext context) {
-    Widget iconBox = SizedBox(
-      height: 80,
-      width: 80,
-      child: Container(
-        child: Card(
-          color: Colors.blue,
-          elevation: 2,
-        ),
-      ),
-    );
-    // TODO: implement build
-    return AppFlatActionCard(
-        Container(
-          child: Stack(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  if (this.isIconLeft == true) iconBox,
-                  SizedBox(
-                    width: 16,
-                  ),
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: this.isIconLeft
-                          ? CrossAxisAlignment.start
-                          : CrossAxisAlignment.end,
-                      children: <Widget>[
-                        Text(
-                          this.title,
-                          style: Theme.of(context).textTheme.subhead,
-                        ),
-                        Text(
-                          this.caption,
-                          style: Theme.of(context).textTheme.caption,
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: 16,
-                  ),
-                  if (this.isIconLeft == false) iconBox,
-                ],
-              ),
-            ],
-          ),
-        ),
-        onTap: this.onTap,
-        padding: EdgeInsets.all(0));
-  }
-}
-
 class BeatifulContentPanel extends StatelessWidget {
   final int height;
   final Widget child;
   final EdgeInsets paddin;
   final EdgeInsets margin;
   final String imageAsset;
-
+  final Color backgroundColor;
   final bool userBackgroundImage;
   BeatifulContentPanel(
       {this.height,
+      this.backgroundColor,
       this.child,
       this.paddin,
       this.margin,
@@ -107,7 +38,7 @@ class BeatifulContentPanel extends StatelessWidget {
     // TODO: implement build
     return Container(
       child: this.child,
-      padding: this.margin,
+      padding: this.paddin,
       margin: this.margin,
       decoration: BoxDecoration(
           image: DecorationImage(
@@ -115,9 +46,50 @@ class BeatifulContentPanel extends StatelessWidget {
                   ? "images/product_add.jpg"
                   : ""),
               fit: BoxFit.contain),
-          color: Colors.black87,
+          color: this.backgroundColor == null
+              ? Color.fromRGBO(200, 200, 200, .4)
+              : this.backgroundColor,
           shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(14)),
+          borderRadius: BorderRadius.circular(10)),
+    );
+  }
+}
+
+class BeatifulCardPanel extends StatelessWidget {
+  final int height;
+  final Widget child;
+  final EdgeInsets paddin;
+  final EdgeInsets margin;
+  final String imageAsset;
+  final Color backgroundColor;
+  final bool userBackgroundImage;
+  BeatifulCardPanel(
+      {this.height,
+      this.backgroundColor,
+      this.child,
+      this.paddin,
+      this.margin,
+      this.imageAsset = null,
+      this.userBackgroundImage});
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Card(
+      color: this.backgroundColor == null ? Colors.white : this.backgroundColor,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      child: Container(
+        child: this.child,
+        padding: this.paddin,
+        margin: this.margin,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage(this.userBackgroundImage == true
+                  ? "images/product_add.jpg"
+                  : ""),
+              fit: BoxFit.contain),
+        ),
+      ),
     );
   }
 }
@@ -130,9 +102,59 @@ class AppSpacedCard extends StatelessWidget {
     // TODO: implement build
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          color: Color.fromRGBO(200, 200, 200, .4),
+          padding: EdgeInsets.all(16),
+          child: this.child,
+        ),
+      ),
+    );
+  }
+}
+
+class SettingsLinkWidget extends StatelessWidget {
+  final Function onClick;
+  final String title;
+  final String description;
+  final IconData trailing;
+
+  SettingsLinkWidget(
+      {this.description, this.title, this.onClick, this.trailing});
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return RawMaterialButton(
+      onPressed: () {},
       child: Container(
-        padding: EdgeInsets.all(24),
+        child: ListTile(
+          onTap: () {
+            onClick();
+          },
+          leading: this.trailing == null ? null : Icon(this.trailing),
+          title: Text(title),
+          subtitle: Text("settings subtitle"),
+          // trailing: this.trailing == null ? null : Icon(this.trailing),
+        ),
+      ),
+    );
+  }
+}
+
+class AppClipRound extends StatelessWidget {
+  final Widget child;
+
+  AppClipRound({this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(100)),
+      child: Container(
         child: this.child,
+        color: Colors.black,
       ),
     );
   }
