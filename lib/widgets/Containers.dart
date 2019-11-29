@@ -57,14 +57,20 @@ class BeatifulContentPanel extends StatelessWidget {
 
 class BeatifulCardPanel extends StatelessWidget {
   final int height;
+  final double elevation;
   final Widget child;
   final EdgeInsets paddin;
   final EdgeInsets margin;
   final String imageAsset;
   final Color backgroundColor;
   final bool userBackgroundImage;
+
+  final ROUNDED_RECTANGULAR_BORDER = RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(14)));
+
   BeatifulCardPanel(
       {this.height,
+      this.elevation,
       this.backgroundColor,
       this.child,
       this.paddin,
@@ -75,9 +81,9 @@ class BeatifulCardPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Card(
+      elevation: this.elevation,
       color: this.backgroundColor == null ? Colors.white : this.backgroundColor,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8))),
+      shape: ROUNDED_RECTANGULAR_BORDER,
       child: Container(
         child: this.child,
         padding: this.paddin,

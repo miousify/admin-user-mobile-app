@@ -20,101 +20,81 @@ class AccountConfiguration extends StatelessWidget {
         SizedBox(
           height: 16,
         ),
-        Container(
-            padding: EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Text(
-                  "Get started",
-                  style: Theme.of(context).textTheme.headline,
-                ),
-                Text(
-                  "Take time to add the required details to be on the move...",
-                  style: Theme.of(context).textTheme.body1,
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            )),
         Expanded(
           child: Container(
             margin: EdgeInsets.all(16),
-            child: BeatifulContentPanel(
-              paddin: EdgeInsets.all(16),
-              backgroundColor: Color.fromRGBO(0, 50, 0, .1),
-              child: ListView(
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      topSpace,
-                      Text(
-                        "Service Plan",
-                        style: Theme.of(context).textTheme.subtitle.apply(),
-                      ),
-                      Text(
-                        "Updating you plan would reboot your system, an take new configurations based on the plan selected",
-                        style: Theme.of(context).textTheme.caption.apply(),
-                      ),
-                      topSpace,
-                      AppPopupWidget(
-                        label: "Select plan",
-                        entries: <PopupMenuItem>[
-                          PopupMenuItem(
-                            height: 60,
-                            child: PlanWidget(
-                              planLabel: "Basic plan",
-                            ),
+            child: ListView(
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    topSpace,
+                    Text(
+                      "Service Plan",
+                      style: Theme.of(context).textTheme.subtitle.apply(),
+                    ),
+                    Text(
+                      "Updating you plan would reboot your system, an take new configurations based on the plan selected",
+                      style: Theme.of(context).textTheme.caption.apply(),
+                    ),
+                    topSpace,
+                    AppPopupWidget(
+                      label: "Select plan",
+                      entries: <PopupMenuItem>[
+                        PopupMenuItem(
+                          height: 60,
+                          child: PlanWidget(
+                            planLabel: "Basic plan",
                           ),
-                          PopupMenuItem(
-                            height: 60,
-                            child: PlanWidget(
-                              planLabel: "Basic plan",
-                            ),
+                        ),
+                        PopupMenuItem(
+                          height: 60,
+                          child: PlanWidget(
+                            planLabel: "Basic plan",
                           ),
-                          PopupMenuItem(
-                            height: 60,
-                            child: PlanWidget(
-                              planLabel: "Basic plan",
-                            ),
-                          )
-                        ],
-                      ),
-                      topSpace,
-                      Text(
-                        "Setup payment Card",
-                        style: Theme.of(context).textTheme.subtitle.apply(),
-                      ),
-                      Text(
-                        "Payment card must be setup for billing",
-                        style: Theme.of(context).textTheme.caption.apply(),
-                      ),
-                      topSpace,
-                      RawMaterialButton(
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return CardTokenHandlerWidget();
-                              });
-                        },
-                        child: AppCardButton(label: "Setup card"),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  Divider(),
-                  RaisedButton(
-                    elevation: 1,
-                    textColor: Colors.white,
-                    onPressed: () {},
-                    padding: EdgeInsets.all(16),
-                    child: Text("Start trial"),
-                  )
-                ],
-              ),
+                        ),
+                        PopupMenuItem(
+                          height: 60,
+                          child: PlanWidget(
+                            planLabel: "Basic plan",
+                          ),
+                        )
+                      ],
+                    ),
+                    topSpace,
+                    Text(
+                      "Setup payment Card",
+                      style: Theme.of(context).textTheme.subtitle.apply(),
+                    ),
+                    Text(
+                      "Payment card must be setup for billing",
+                      style: Theme.of(context).textTheme.caption.apply(),
+                    ),
+                    topSpace,
+                    RawMaterialButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return CardTokenHandlerWidget();
+                            });
+                      },
+                      child: AppCardButton(label: "Setup card"),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 24,
+                ),
+                Divider(),
+                RaisedButton(
+                  elevation: 1,
+                  textColor: Colors.white,
+                  onPressed: () {},
+                  padding: EdgeInsets.all(16),
+                  child: Text("Start trial"),
+                )
+              ],
             ),
           ),
         )

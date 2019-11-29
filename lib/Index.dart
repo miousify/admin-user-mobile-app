@@ -149,6 +149,7 @@ class _IndexState extends State<IndexPage> {
         position: DecorationPosition.background,
         decoration: BoxDecoration(color: Color.fromRGBO(220, 225, 220, .9)),
         child: ListView(
+          shrinkWrap: true,
           children: <Widget>[
             BeatifulContentPanel(
               margin: EdgeInsets.symmetric(vertical: 12),
@@ -171,7 +172,13 @@ class _IndexState extends State<IndexPage> {
                 ),
               ),
             ),
-            IndexBucketsInfo()
+            Container(
+              child: IndexBucketsInfo(),
+              height: 270,
+            ),
+            SizedBox(
+              height: 12,
+            )
           ],
           //BriefProductList(),
         ),

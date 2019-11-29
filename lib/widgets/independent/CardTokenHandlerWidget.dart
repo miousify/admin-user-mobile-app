@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import "package:stripe_sdk/stripe_sdk.dart";
 import "package:stripe_sdk/stripe_sdk_ui.dart";
 
+import "../AppWidgets.dart";
+
 const publishableKey = "pk_test_JPJ4BllTNIq658zwRmfpnLB9";
 
 exampleStripeSetup() async {}
@@ -51,12 +53,18 @@ class _CardTokenHandlerState extends State<CardTokenHandlerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    CardForm form = CardForm(card: card, formKey: formKey);
+    CardForm form = CardForm(
+      card: card,
+      formKey: formKey,
+      cardExpiryDecoration: App_getDefaultInputDecoration(label: "Expiry date"),
+      cardCvcDecoration: App_getDefaultInputDecoration(label: "CVC"),
+      cardNumberDecoration: App_getDefaultInputDecoration(label: "Card number"),
+    );
 
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text("Card "),
+        title: Text("Setup Primary Card "),
       ),
       body: Flex(
         direction: Axis.vertical,
@@ -65,22 +73,17 @@ class _CardTokenHandlerState extends State<CardTokenHandlerWidget> {
             child: Center(
               child: Icon(
                 Icons.credit_card,
+                color: Colors.grey,
                 size: 40,
               ),
             ),
             padding: EdgeInsets.only(top: 16),
           ),
           Container(padding: EdgeInsets.symmetric(horizontal: 16), child: form),
-          Center(child: Text(responseA)),
           Center(
-            child: RaisedButton(
-              onPressed: () {
-                pay();
-                setState(() {
-                  showMessage = true;
-                });
-              },
-              child: Text("submit"),
+            child: AppPrimaryButton(
+              onClick: () {},
+              label: "Submit",
             ),
           )
         ],

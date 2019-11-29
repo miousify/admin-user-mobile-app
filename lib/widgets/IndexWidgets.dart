@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 
 import "./AppWidgets.dart";
-import "./Containers.dart";
 import 'independent/TransactionInsight.dart';
 
 int generalPadding = 24;
@@ -27,143 +26,28 @@ class InfoBox extends StatelessWidget {
   }
 }
 
-class BriefProductList extends StatelessWidget {
-  Widget productsPageBtn = RawMaterialButton(
-    onPressed: () {},
-    elevation: 10,
-    padding: EdgeInsets.all(12),
-    shape: CircleBorder(),
-    child: Icon(
-      Icons.arrow_forward_ios,
-      size: 14,
-      color: Colors.green,
-    ),
-    fillColor: Colors.white,
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    Widget ii = Container(
-      child: AspectRatio(
-        aspectRatio: 1 / 1,
-        child: Card(
-          color: Colors.blue,
-          child: Image.network(
-            '',
-          ),
-        ),
-      ),
-    );
-    // TODO: implement build
-    return Container(
-      constraints: BoxConstraints.tightFor(height: 180),
-      child: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          BeatifulContentPanel(
-            margin: EdgeInsets.symmetric(vertical: 14, horizontal: 14),
-            paddin: EdgeInsets.all(12),
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  SizedBox(
-                    width: 12,
-                  )
-                ],
-              ),
-              Expanded(
-                child: ListView(
-                  itemExtent: 100,
-                  scrollDirection: Axis.horizontal,
-                  children: <Widget>[
-                    for (int i = 0; i <= 10; i++)
-                      Align(
-                        alignment: Alignment.center,
-                        child: ii,
-                      ),
-                  ],
-                ),
-              )
-            ],
-          ),
-          Row(
-            children: <Widget>[SizedBox(), productsPageBtn],
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-          )
-        ],
-      ),
-    );
-  }
-}
-
 class IndexBucketsInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.start,
+    return ListView(
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      itemExtent: 270,
       children: <Widget>[
         _BucketInfo(
-            cardTitle: "Products",
-            caption: Column(
-              children: <Widget>[
-                Text(
-                  "Get started!!!",
-                  style: Theme.of(context).textTheme.subhead.apply(),
-                ),
-                Text(
-                  "You don't have any products added yet",
-                  style: Theme.of(context).textTheme.caption.apply(),
-                )
-              ],
-            ),
-            infor: Text("0"),
-            action: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                AppPrimaryButton(
-                    label: "Create product",
-                    onClick: () {
-                      Navigator.pushNamed(context, "/create-product",
-                          arguments: {"isNew": true});
-                    })
-              ],
-            )),
-        SizedBox(
-          height: 12,
+          cardTitle: "Get started",
+          action: AppPrimaryButton(
+            label: "Create Product",
+            onClick: () {},
+          ),
         ),
         _BucketInfo(
-            caption: Column(
-              children: <Widget>[
-                Text(
-                  "Get started!!!",
-                  style: Theme.of(context).textTheme.subhead.apply(),
-                ),
-                Text(
-                  "You don't have any categories for classification",
-                  style: Theme.of(context).textTheme.caption.apply(),
-                )
-              ],
-            ),
-            cardTitle: "Categories",
-            action: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                AppPlainButton(
-                    label: "Create category",
-                    onClick: () {
-                      Navigator.pushNamed(context, "/create-category",
-                          arguments: {"isNew": true});
-                    })
-              ],
-            )),
+          cardTitle: "Get started",
+          action: AppPlainButton(
+            label: "Create category",
+          ),
+        ),
       ],
     );
   }
@@ -180,77 +64,51 @@ class _BucketInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Container(
-      color: Colors.white,
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  cardTitle,
-                  style: Theme.of(context).textTheme.subhead.apply(),
-                ),
-                this.tags == null
-                    ? Text("")
-                    : Row(
-                        children: this.tags,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                      )
-              ],
-            ),
-          ),
-          Divider(
-            endIndent: 0,
-            indent: 0,
-            thickness: 0,
-            height: 0,
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Container(
-            padding: EdgeInsets.all(24),
+    return AspectRatio(
+      aspectRatio: 1 / 1,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 6),
+        child: BeatifulCardPanel(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    CircleAvatar(
-                      backgroundColor: Colors.grey,
-                    ),
-                    SizedBox(
-                      width: 4,
-                    ),
-                    CircleAvatar(
-                      backgroundColor: Colors.grey,
-                    ),
-                    SizedBox(
-                      width: 4,
-                    ),
-                    CircleAvatar(
-                      backgroundColor: Colors.grey,
-                    )
-                  ],
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(top: 8, left: 8, right: 8),
+                child: BeatifulCardPanel(
+                  elevation: 0,
+                  backgroundColor: Colors.blue,
                 ),
-                SizedBox(
-                  height: 8,
-                ),
-                caption,
-                SizedBox(
-                  height: 16,
-                ),
-                action
-              ],
+              ),
             ),
-          )
-        ],
+            SizedBox(
+              height: 8,
+            ),
+            Container(
+              padding: EdgeInsets.only(bottom: 8, left: 14, right: 14),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    this.cardTitle,
+                    style: Theme.of(context).textTheme.subhead,
+                  ),
+                  Text(
+                    "Add more productucts to your store",
+                    style: Theme.of(context).textTheme.caption,
+                  )
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+              child: this.action,
+            )
+          ],
+        )),
       ),
     );
   }

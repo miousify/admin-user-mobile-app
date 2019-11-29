@@ -5,8 +5,8 @@ import "./Location.dart";
 import "./index.dart";
 import "../../widgets/AppWidgets.dart";
 
-class AccountRoute extends MaterialPageRoute {
-  AccountRoute()
+class AdminRoute extends MaterialPageRoute {
+  AdminRoute()
       : super(builder: (BuildContext context) {
           return Settings();
         });

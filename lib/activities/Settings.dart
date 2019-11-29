@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-import "./Account/Account.dart";
+import "./Account/Administration.dart";
 import "../widgets/AppWidgets.dart";
 
 class SettingsRoute extends MaterialPageRoute {
@@ -39,7 +39,7 @@ class Settings extends StatelessWidget {
               margin: EdgeInsets.all(14),
               child: ListTile(
                 onTap: () {
-                  Navigator.push(context, AccountRoute());
+                  Navigator.push(context, AdminRoute());
                 },
                 title: Text("Administrative area",
                     style: Theme.of(context).textTheme.subtitle),

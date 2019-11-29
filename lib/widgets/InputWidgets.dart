@@ -1,5 +1,15 @@
 import "package:flutter/material.dart";
 
+UnderlineInputBorder App_getDefaultInputBorder(Color color) {
+  return UnderlineInputBorder(
+      borderSide: BorderSide(color: color == null ? Colors.grey : color));
+}
+
+InputDecoration App_getDefaultInputDecoration({String label}) {
+  return InputDecoration(
+      labelText: label, focusedBorder: App_getDefaultInputBorder(Colors.green));
+}
+
 abstract class AppInputFactory extends StatelessWidget {
   final String hint;
   final String label;
