@@ -7,9 +7,9 @@ import "../data/restActions.dart";
 import "../widgets/AppWidgets.dart";
 import "../widgets/independent/BucketItemImageAssetWidget.dart";
 
-class CreateProductWidget extends MaterialPageRoute {
+class ProductEditorRoute extends MaterialPageRoute {
   final String id;
-  CreateProductWidget({this.id})
+  ProductEditorRoute({this.id})
       : super(builder: (BuildContext build) {
           return ProductEditor(
             id: id,
@@ -35,18 +35,15 @@ class _NewProductState extends State<ProductEditor> {
   String description;
   String category;
   String caption;
-
-  double sellingPrice;
-  double costPrice;
-
+  double sellingPrice = 0.0;
+  double costPrice = 0.0;
   String image;
   String cover;
-
-  bool available;
-  int quantity;
-
+  bool available = true;
+  int quantity = 0;
   bool viewLoaded = false;
   bool sendingRequest = false;
+
   Map<String, dynamic> product;
   @override
   initState() {
@@ -62,10 +59,7 @@ class _NewProductState extends State<ProductEditor> {
           available = product['available'];
           quantity = product['quantity'];
           costPrice = product['costPrice'];
-          sellingPrice = product['image'];
-        });
-
-        setState(() {
+          sellingPrice = product['sellingPrice'];
           viewLoaded = true;
         });
       }).catchError((error) {
@@ -79,16 +73,14 @@ class _NewProductState extends State<ProductEditor> {
   }
 
   onSelectCover(imageURI) {
-    print("got cover image");
-    print(imageURI);
     setState(() {
-      image = imageURI;
+      cover = imageURI;
     });
   }
 
   onSelectPrimary(imageURI) {
     setState(() {
-      this.image = imageURI;
+      image = imageURI;
     });
   }
 
@@ -101,19 +93,28 @@ class _NewProductState extends State<ProductEditor> {
         "caption": caption,
         "image": image,
         "available": available,
-        "quantity": quantity.toString(),
-        "sellingPrice": sellingPrice.toString(),
-        "costPrice": costPrice.toString()
+        "availability": true,
+        "quantity": sellingPrice,
+        "sellingPrice": sellingPrice,
+        "costPrice": costPrice
       };
+
+      print(map);
 
       if (id == null) {
         setState(() {
           sendingRequest = true;
         });
+
+        print("sent");
         String response = await ProductActions().postToBucket(map);
+
+        print("printing after post0");
+
         setState(() {
           sendingRequest = false;
         });
+
         if (response == null) {
           // something went wrong.
           return null;
@@ -202,6 +203,8 @@ class _NewProductState extends State<ProductEditor> {
               setState(() {
                 print(value);
                 quantity = int.tryParse(value);
+
+                print("runtimet+ " + quantity.runtimeType.toString());
               });
             }),
         SwitchListTile(

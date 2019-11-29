@@ -5,12 +5,14 @@ class AppPrimaryScaffold extends StatelessWidget {
   final String title;
   final List<Widget> actions;
 
-  AppPrimaryScaffold({this.body, this.title, this.actions});
+  final TabBar tabBar;
+  AppPrimaryScaffold({this.body, this.title, this.actions, this.tabBar});
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
+        bottom: this.tabBar == null ? null : this.tabBar,
         iconTheme: IconThemeData(color: Color.fromRGBO(0, 50, 0, .9)),
         textTheme:
             TextTheme(title: TextStyle(color: Color.fromRGBO(0, 50, 0, .9))),

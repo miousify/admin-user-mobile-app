@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 
 import './Index.dart';
-import "./activities/Categories.dart";
+import './activities/Activities.dart';
 import "./activities/CreateCategory.dart";
-import "./activities/CreateProduct.dart";
 import "./activities/Customers.dart";
 import "./activities/Login.dart";
-import "./activities/Products.dart";
-import "./activities/Settings.dart";
-import "./activities/Transactions.dart";
 import "./activities/ViewCategory.dart";
 import "./activities/ViewProduct.dart";
 import "./data/AppStorage.dart";
@@ -29,7 +25,7 @@ class MyApp extends StatefulWidget {
 
 class MainAppState extends State<MyApp> {
   // This widget is the root of your application.
-  bool isLoggedIN = true;
+  bool isLoggedIN = false;
 
   onLoggedIn() {
     setState(() {
@@ -53,7 +49,7 @@ class MainAppState extends State<MyApp> {
         return SettingsRoute().builder(context);
       },
       "/create-product": (BuildContext context) {
-        return CreateProductWidget().builder(context);
+        return ProductEditorRoute().builder(context);
       },
       "/products": (BuildContext context) {
         return ProductsViewRoute().builder(context);
@@ -107,7 +103,7 @@ class MainAppState extends State<MyApp> {
             return GenericLoadingWidget();
             break;
           case ConnectionState.done:
-            return snapshot.data == null
+            return snapshot.data != null
                 ? IndexPage(
                     onLogout: this.onLoggedout,
                   )

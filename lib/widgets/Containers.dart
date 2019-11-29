@@ -129,12 +129,18 @@ class SettingsLinkWidget extends StatelessWidget {
       onPressed: () {},
       child: Container(
         child: ListTile(
+          dense: false,
           onTap: () {
             onClick();
           },
-          leading: this.trailing == null ? null : Icon(this.trailing),
+          leading: this.trailing == null
+              ? null
+              : Icon(
+                  this.trailing,
+                  color: Colors.black87,
+                ),
           title: Text(title),
-          subtitle: Text("settings subtitle"),
+          subtitle: this.description == null ? null : Text("settings subtitle"),
           // trailing: this.trailing == null ? null : Icon(this.trailing),
         ),
       ),

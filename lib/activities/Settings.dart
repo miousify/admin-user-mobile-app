@@ -1,9 +1,7 @@
 import "package:flutter/material.dart";
 
+import "./Account/Account.dart";
 import "../widgets/AppWidgets.dart";
-import "Settings/ContactWidget.dart";
-import "Settings/Location.dart";
-import "Settings/index.dart";
 
 class SettingsRoute extends MaterialPageRoute {
   SettingsRoute()
@@ -18,7 +16,7 @@ class Settings extends StatelessWidget {
     // TODO: implement build
 
     void generalSettings() {
-      Navigator.push(context, GeneralSettings());
+      //Navigator.push(context, GeneralSettings());
     }
 
     return Scaffold(
@@ -39,17 +37,14 @@ class Settings extends StatelessWidget {
             child: BeatifulContentPanel(
               backgroundColor: Colors.white,
               margin: EdgeInsets.all(14),
-              paddin: EdgeInsets.all(14),
-              child: SwitchListTile(
-                activeColor: Color.fromRGBO(0, 50, 0, .9),
-                activeTrackColor: Colors.grey,
-                value: true,
-                onChanged: (value) {},
-                selected: true,
-                title: Text("Enable store",
+              child: ListTile(
+                onTap: () {
+                  Navigator.push(context, AccountRoute());
+                },
+                title: Text("Administrative area",
                     style: Theme.of(context).textTheme.subtitle),
                 subtitle: Text(
-                  "you must add a card, and a selected plan to successfully enable your store",
+                  "Business account page",
                   style: Theme.of(context)
                       .textTheme
                       .caption
@@ -59,68 +54,53 @@ class Settings extends StatelessWidget {
             ),
           ),
           Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              SettingsLinkWidget(
-                title: "Account",
-                trailing: Icons.account_circle,
-                onClick: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (BuildContext context) {
-                    return AccountControlWidget();
-                  }));
-                },
-              ),
               Divider(
-                endIndent: 0,
+                height: 0,
               ),
               SettingsLinkWidget(
-                title: "Business Profile",
-                trailing: Icons.info,
-                onClick: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (BuildContext context) {
-                    return BusinessProfileControlWidget();
-                  }));
-                },
+                title: "Security",
+                trailing: Icons.security,
+                onClick: () {},
               ),
               SettingsLinkWidget(
-                title: "Location",
-                trailing: Icons.my_location,
-                onClick: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (BuildContext context) {
-                    return LocationControlWidget();
-                  }));
-                },
-              ),
-              SettingsLinkWidget(
-                title: "Contact",
-                trailing: Icons.perm_contact_calendar,
-                onClick: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (BuildContext context) {
-                    return ContactControlWidget();
-                  }));
-                },
-              ),
-              SettingsLinkWidget(
-                title: "Business configuration",
-                trailing: Icons.business_center,
-              ),
-              Divider(),
-              SettingsLinkWidget(
-                title: "Site settings",
-                trailing: Icons.web,
-              ),
-              Divider(),
-              SettingsLinkWidget(
-                title: "Push Notifications",
+                title: "Notifications",
                 trailing: Icons.notifications,
               ),
-              SettingsLinkWidget(
-                title: "Configuration",
-                trailing: Icons.settings,
+              Divider(
+                height: 0,
               ),
+              Divider(
+                height: 0,
+              ),
+              SettingsLinkWidget(
+                title: "Terms of service",
+                trailing: Icons.insert_comment,
+              ),
+              SettingsLinkWidget(
+                title: "About",
+                trailing: Icons.info,
+              ),
+              SettingsLinkWidget(
+                title: "Support",
+                trailing: Icons.supervisor_account,
+              ),
+              Container(
+                child: BeatifulContentPanel(
+                  margin: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                  child: Container(
+                    height: 100,
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(12),
+                child: AppPrimaryButton(
+                  onClick: () {},
+                  label: "Logout",
+                ),
+              )
             ],
           ),
         ],

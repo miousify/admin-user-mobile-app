@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
-import "./CreateProduct.dart";
 import "./GenericBucketListings.dart";
+import "./ProductEditor.dart";
 import "../data/models/ProductModel.dart";
 import "../data/restActions.dart";
 import "../widgets/AppWidgets.dart";
@@ -141,6 +141,7 @@ class ProductsListings extends GenericList {
         ProductListModel(items).items.map((ProductModel product) {
       return ProductItemWidget(
         product: product,
+        key: Key(product.id),
       );
     });
 
@@ -159,8 +160,8 @@ class ProductsListings extends GenericList {
 
 class ProductItemWidget extends StatelessWidget {
   final ProductModel product;
-
-  ProductItemWidget({@required this.product});
+  final Key key;
+  ProductItemWidget({@required this.product, this.key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +174,9 @@ class ProductItemWidget extends StatelessWidget {
         onPressed: () {
           Navigator.push(context,
               MaterialPageRoute(builder: (BuildContext context) {
-            return ProductEditor(id: product.id);
+            return ProductEditor(
+              id: product.id,
+            );
           }));
         },
         child: Container(
@@ -228,18 +231,26 @@ class ProductItemWidget extends StatelessWidget {
                   width: 8,
                 ),
                 PopupMenuButton(
+                  onSelected: (value) {
+                    switch (value) {
+                      case "Delete":
+                        print("Going to delete item");
+                        break;
+                    }
+                  },
                   child: SizedBox(
                     width: 30,
-                    child: Icon(
-                      Icons.more_vert,
-                      color: Colors.black,
-                    ),
+                    child: Icon(Icons.more_vert),
                   ),
                   itemBuilder: (BuildContext context) {
                     return <PopupMenuItem>[
-                      PopupMenuItem(child: Text("View")),
+                      PopupMenuItem(
+                        child: Text("View"),
+                        value: "view",
+                      ),
                       PopupMenuItem(
                         child: Text("Delete"),
+                        value: "delete",
                       ),
                       PopupMenuItem(child: Text("Mute"))
                     ];

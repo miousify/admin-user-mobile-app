@@ -35,7 +35,7 @@ class AppPopupWidget extends StatelessWidget {
                   color: Color.fromRGBO(0, 50, 0, .9),
                 ),
                 leftSpace,
-                Text(this.label)
+                Text(this.label, style: Theme.of(context).textTheme.button)
               ],
             ),
             Icon(

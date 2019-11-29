@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-import "./data/AppStorage.dart";
+import "./widgets/AppWidgets.dart";
 import "./widgets/IndexWidgets.dart";
 
 class IndexPage extends StatefulWidget {
@@ -69,59 +69,72 @@ class _IndexState extends State<IndexPage> {
 
     Widget MainAppbar() {
       return AppBar(
-        elevation: 0,
-        iconTheme: IconThemeData(color: Color.fromRGBO(0, 50, 0, .9)),
-        textTheme:
-            TextTheme(title: TextStyle(color: Color.fromRGBO(0, 50, 0, .9))),
-        leading: Icon(Icons.vpn_key, color: Colors.black),
-        backgroundColor: Colors.white,
-        actions: <Widget>[
-          RawMaterialButton(
-            constraints: BoxConstraints.tightFor(width: 40),
-            onPressed: null,
-            child: Icon(Icons.person, color: Colors.black),
-          ),
-          SizedBox(
-            width: 16,
-          ),
-          RawMaterialButton(
-            constraints: BoxConstraints.tightFor(width: 40),
-            onPressed: _settingsView,
-            child: Icon(Icons.settings, color: Colors.black),
-          ),
-          RawMaterialButton(
-            constraints: BoxConstraints.tightFor(width: 40),
-            onPressed: () {},
-            child: PopupMenuButton(
-                icon: Icon(
-                  Icons.more_vert,
-                  color: Colors.black,
-                ),
-                itemBuilder: (BuildContext context) {
-                  List<PopupMenuEntry> entries = List();
-                  entries.add(PopupMenuItem(child: Text("Data")));
-                  entries.add(PopupMenuItem(
-                      child: Row(
-                    children: <Widget>[Text("Visit Site")],
-                  )));
-                  entries.add(PopupMenuItem(
-                    child: RawMaterialButton(
-                      onPressed: () async {
-                        await AppStorage().destroySession();
-                        this.onLogout();
-                      },
-                      child: Text("Logout"),
+          elevation: 2,
+          iconTheme: IconThemeData(color: Color.fromRGBO(0, 50, 0, .9)),
+          textTheme:
+              TextTheme(title: TextStyle(color: Color.fromRGBO(0, 50, 0, .9))),
+          title: Row(
+            children: <Widget>[
+              FlatButton(
+                color: Colors.black87,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                padding: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
+                onPressed: () {},
+                textColor: Colors.white,
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.vpn_key,
+                      size: 16,
+                      color: Colors.white,
                     ),
-                  ));
-                  return entries;
-                }),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      "ADMIN",
+                      style: Theme.of(context)
+                          .textTheme
+                          .button
+                          .apply(color: Colors.white),
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
-          SizedBox(
-            width: 12,
-          )
-        ],
-        title: Text("Admin"),
-      );
+          backgroundColor: Colors.white,
+          actions: <Widget>[
+            RawMaterialButton(
+              padding: EdgeInsets.all(0),
+              constraints: BoxConstraints.tightFor(width: 60),
+              onPressed: _settingsView,
+              child: Icon(Icons.settings, color: Colors.black),
+            ),
+            RawMaterialButton(
+              padding: EdgeInsets.all(0),
+              constraints: BoxConstraints.tightFor(width: 60),
+              onPressed: () {},
+              child: PopupMenuButton(
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: Colors.black,
+                  ),
+                  itemBuilder: (BuildContext context) {
+                    List<PopupMenuEntry> entries = List();
+                    entries.add(PopupMenuItem(child: Text("Data")));
+                    entries.add(PopupMenuItem(
+                        child: Row(
+                      children: <Widget>[Text("Visit Site")],
+                    )));
+                    entries.add(PopupMenuItem(
+                      child: Text("Logout"),
+                    ));
+                    return entries;
+                  }),
+            )
+          ]);
     }
 
     BottomNavigationBarItem bottomNavTemp({IconData icon, title}) {
@@ -136,7 +149,30 @@ class _IndexState extends State<IndexPage> {
         position: DecorationPosition.background,
         decoration: BoxDecoration(color: Color.fromRGBO(220, 225, 220, .9)),
         child: ListView(
-          children: <Widget>[InfoBox(), IndexBucketsInfo()],
+          children: <Widget>[
+            BeatifulContentPanel(
+              margin: EdgeInsets.symmetric(vertical: 12),
+              child: Container(
+                height: 100,
+                color: Colors.white,
+                child: Center(
+                  child: Text("Complete setup"),
+                ),
+              ),
+            ),
+            InfoBox(),
+            BeatifulContentPanel(
+              margin: EdgeInsets.symmetric(vertical: 12),
+              child: Container(
+                height: 100,
+                color: Colors.white,
+                child: Center(
+                  child: Text("Recent Orders on store complete"),
+                ),
+              ),
+            ),
+            IndexBucketsInfo()
+          ],
           //BriefProductList(),
         ),
       ),
@@ -144,10 +180,10 @@ class _IndexState extends State<IndexPage> {
           onTap: _bottomOnNavigationItemTap,
           showUnselectedLabels: true,
           showSelectedLabels: true,
-          selectedItemColor: Colors.black,
+          selectedItemColor: Colors.black87,
           selectedFontSize: 12,
           unselectedFontSize: 12,
-          unselectedItemColor: Colors.black,
+          unselectedItemColor: Colors.black87,
           items: [
             bottomNavTemp(icon: Icons.shopping_cart, title: "Products"),
             bottomNavTemp(icon: Icons.category, title: "Categories"),

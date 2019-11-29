@@ -3,6 +3,12 @@ import "dart:io";
 import 'package:flutter/material.dart';
 import "package:image_picker_modern/image_picker_modern.dart";
 
+const BorderRadiusGeometry _BORDER_RADIUS_GEOMETERY =
+    BorderRadius.all(Radius.elliptical(5, 5));
+
+const RoundedRectangleBorder _SHAPE_BORDER =
+    RoundedRectangleBorder(borderRadius: _BORDER_RADIUS_GEOMETERY);
+
 class AppImageUploaderButton extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -118,10 +124,11 @@ class AppPrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return RaisedButton(
+      elevation: 1,
+      hoverElevation: 2,
       padding: EdgeInsets.all(12),
       onPressed: this.onClick,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.elliptical(5, 5))),
+      shape: _SHAPE_BORDER,
       child: Text(this.label,
           style: Theme.of(context).textTheme.button.apply(color: Colors.white)),
     );
@@ -140,8 +147,7 @@ class AppSecondaryButton extends StatelessWidget {
     return RaisedButton(
       padding: EdgeInsets.all(12),
       onPressed: this.onClick,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.elliptical(5, 5))),
+      shape: _SHAPE_BORDER,
       child: Text(this.label,
           style: Theme.of(context).textTheme.button.apply(color: Colors.white)),
     );
@@ -151,22 +157,21 @@ class AppSecondaryButton extends StatelessWidget {
 class AppPlainButton extends StatelessWidget {
   final String label;
   final Function onClick;
-  AppPlainButton({this.onClick, this.label});
+  final bool withBackground;
+  Color color = Color.fromRGBO(0, 50, 0, .9);
+  AppPlainButton({this.onClick, this.label, this.withBackground = true});
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return FlatButton(
       padding: EdgeInsets.all(12),
       onPressed: this.onClick,
-      color: Colors.white,
+      color: this.withBackground == true ? Colors.white : Colors.transparent,
       shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1),
-          borderRadius: BorderRadius.all(Radius.elliptical(5, 5))),
+          side: BorderSide(width: 1, color: color),
+          borderRadius: _BORDER_RADIUS_GEOMETERY),
       child: Text(this.label,
-          style: Theme.of(context)
-              .textTheme
-              .button
-              .apply(color: Color.fromRGBO(0, 50, 0, .9))),
+          style: Theme.of(context).textTheme.button.apply(color: color)),
     );
   }
 }
@@ -184,8 +189,7 @@ class AppOutlinedButton extends StatelessWidget {
       padding: EdgeInsets.all(12),
       onPressed: this.onClick,
       color: Colors.white,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.elliptical(7, 7))),
+      shape: RoundedRectangleBorder(borderRadius: _BORDER_RADIUS_GEOMETERY),
       child: Text(this.label,
           style: Theme.of(context)
               .textTheme

@@ -10,13 +10,39 @@ import "./AppStorage.dart";
 /*
 * Is responsible for getting store buckets e.g products, categories and the rest
  */
-String AUTHORITY = "api-dot-lubi-ep.appspot.com";
-String STORE_PATH = "/api/store";
 
 abstract class AppHTTPFactory {
   String STORE_PATH = "/api/store";
   String AUTHORITY = "api-dot-lubi-ep.appspot.com";
   Future<bool> loadInternalId();
+}
+
+String PREPARE_FIELDS_FOR_UPLOAD(Map<String, dynamic> fields) {
+  String encodedString = "";
+  fields.forEach((String key, dynamic value) {
+    encodedString = encodedString + key + "=" + value.toString() + "&";
+  });
+  print(encodedString);
+  return encodedString;
+}
+
+Future<http.Response> AppRequest({Uri uri, data, String method}) async {
+  http.Response response;
+  try {
+    http.Request request = http.Request(method == null ? "POST" : method, uri);
+    request.body = PREPARE_FIELDS_FOR_UPLOAD(data);
+    request.headers
+        .addAll({"content-type": "application/x-www-form-urlencoded"});
+    // request.encoding = Encoding.getByName("utf8");
+    //response = await http.post(uri, body: item);
+    http.StreamedResponse streamedResponse = await request.send();
+    response = await http.Response.fromStream(streamedResponse);
+    return response;
+  } catch (e) {
+    print("error occ");
+    print(e);
+    throw ("Count not make request successfully");
+  }
 }
 
 class RESTActions extends AppHTTPFactory {
@@ -28,66 +54,7 @@ class RESTActions extends AppHTTPFactory {
 
   RESTActions(this.bucketName) {}
 
-  Future<String> getBucketItems({Map<String, dynamic> filter}) async {
-    if (internal_store_id == null) {
-      await this.loadInternalId();
-    }
-    String response = await http.read(getBucketURI());
-    // try to return list model of items
-    return response;
-  }
-
-  Future<String> getBucketItem(String itemID) async {
-    print("before gettng items");
-    if (internal_store_id == null) {
-      await this.loadInternalId();
-    }
-
-    print("loaded internal store_id");
-    String path = STORE_PATH +
-        "/" +
-        internal_store_id +
-        "/" +
-        this.bucketName +
-        "/" +
-        itemID;
-
-    String response;
-    try {
-      response = await http.read(Uri.http(AUTHORITY, path));
-      return response;
-    } catch (error) {
-      print(error);
-    }
-  }
-
-  Future<bool> loadInternalId() async {
-    Map token = await AppStorage().getStoreAuth();
-    String __internal_id = token['internal_id'];
-    internal_store_id = __internal_id;
-    return true;
-  }
-
-  Future<dynamic> postToBucket(Map<String, dynamic> item) async {
-    if (internal_store_id == null) {
-      await this.loadInternalId();
-    }
-    Uri uri = Uri.http(AUTHORITY,
-        STORE_PATH + "/" + internal_store_id + "/" + this.bucketName);
-
-    print("started creating");
-
-    // removel all keys with null as value
-    item.removeWhere((key, value) {
-      if (value == null) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-    print(item);
-
-    http.Response response = await http.post(uri, body: item);
+  checkForError(http.Response response) {
     switch (response.statusCode) {
       case 200:
         String body = response.body;
@@ -104,26 +71,41 @@ class RESTActions extends AppHTTPFactory {
     }
   }
 
-  getBucketURI() {
-    Uri uri = Uri.http(AUTHORITY,
-        STORE_PATH + "/" + internal_store_id + "/" + this.bucketName);
-    return uri;
+  Future<String> getBucketItems({Map<String, dynamic> filter}) async {
+    if (internal_store_id == null) {
+      await this.loadInternalId();
+    }
+    String response = await http.read(getBucketURI());
+    // try to return list model of items
+    return response;
   }
 
-  Future<bool> putInBucket(String itemID, Map item) async {
+  Future<String> getBucketItem(String itemID) async {
     if (internal_store_id == null) {
       await this.loadInternalId();
     }
 
-    Uri uri = Uri.http(
-        AUTHORITY,
-        STORE_PATH +
-            "/" +
-            internal_store_id +
-            "/" +
-            this.bucketName +
-            "/" +
-            itemID);
+    String response;
+    try {
+      response = await http.read(getBucketURI(item: itemID));
+      return response;
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future<bool> loadInternalId() async {
+    Map token = await AppStorage().getStoreAuth();
+    String __internal_id = token['internal_id'];
+    internal_store_id = __internal_id;
+    return true;
+  }
+
+  Future<dynamic> postToBucket(Map<String, dynamic> item) async {
+    print("starting post");
+    if (internal_store_id == null) {
+      await this.loadInternalId();
+    }
     // removel all keys with null as value
     item.removeWhere((key, value) {
       if (value == null) {
@@ -133,18 +115,76 @@ class RESTActions extends AppHTTPFactory {
       }
     });
 
-    print("before-p " + item.toString());
+    http.Response response;
+
+    try {
+//      http.Request request = http.Request("POST", getBucketURI());
+//      request.body = PREPARE_FIELDS_FOR_UPLOAD(item);
+//      request.headers
+//          .addAll({"content-type": "application/x-www-form-urlencoded"});
+//      // request.encoding = Encoding.getByName("utf8");
+//      //response = await http.post(uri, body: item);
+//      http.StreamedResponse streamedResponse = await request.send();
+
+//      response = await http.Response.fromStream(streamedResponse);
+
+      response = await AppRequest(uri: getBucketURI(), data: item);
+
+      print("gott response");
+      print(response.body);
+    } catch (e) {
+      print("error occ");
+      print(e);
+      return false;
+    }
+    switch (response.statusCode) {
+      case 200:
+        String body = response.body;
+        print("Successfully created an item");
+        return body;
+        break;
+      case 500:
+        print("Error creating an item");
+        return null;
+        break;
+      default:
+        //unknown error occured notify client and server;
+        null;
+    }
+  }
+
+  Uri getBucketURI({String item}) {
+    String path = STORE_PATH + "/" + internal_store_id + "/" + this.bucketName;
+
+    if (item != null) {
+      path = path + "/" + item;
+    }
+    Uri uri = Uri.http(AUTHORITY, path);
+    return uri;
+  }
+
+  Future<bool> putInBucket(String itemID, Map<String, dynamic> item) async {
+    if (internal_store_id == null) {
+      await this.loadInternalId();
+    }
+    // removel all keys with null as value
+    item.removeWhere((key, value) {
+      if (value == null) {
+        return true;
+      } else {
+        return false;
+      }
+    });
 
     http.Response response;
     try {
-      response = await http.put(uri, body: item);
-      print("after receiving response");
-      print(response);
+      //response = await http.put(getBucketURI(item: itemID), body: item);
+      response = await AppRequest(
+          method: "PUT", uri: getBucketURI(item: itemID), data: item);
       switch (response.statusCode) {
         case 200:
           String body = response.body;
           // return true
-          print(body);
           print("updated bucket item successful");
           return true;
           break;
@@ -160,7 +200,6 @@ class RESTActions extends AppHTTPFactory {
       }
     } catch (error) {
       print(error);
-      print("error occured");
     }
   }
 
@@ -202,7 +241,6 @@ class StoreRestAction extends AppHTTPFactory {
       await this.loadInternalId();
     }
     Uri updateURI = getStoreURI();
-
     http.Response response = await http.put(updateURI, body: data);
   }
 
